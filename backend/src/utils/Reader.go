@@ -17,6 +17,7 @@ func (reader DBReader) Read() *model.FindResult {
 
 func toRad(a float64) float64 {
   return a*math.Pi/180
+
 }
 
 func dist(c0, c1 model.Coord) float64 {
