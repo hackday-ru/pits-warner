@@ -61,7 +61,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
     Uid: uuid.NewV4(),
-    Timestamp: 0.0,
+    Timestamp: 0,
     Longitude: 0.0,
     Latitude: 0.0,
     Altitude: 0.0,
