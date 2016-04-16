@@ -1,11 +1,14 @@
 ﻿using Android.App;
 using Android.Widget;
 using Android.OS;
+using PitWarner.ViewModels;
+using MvvmCross.Droid.Views;
+using MvvmCross.Binding.BindingContext;
 
 namespace PitWarner.Droid
 {
     [Activity(Label = "PitWarner", MainLauncher = true, Icon = "@mipmap/icon")]
-    public class MainActivity : Activity
+    public class MainActivity : MvxActivity<MainViewModel>
     {
         int count = 1;
 
@@ -15,6 +18,8 @@ namespace PitWarner.Droid
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+
+            var set = this.CreateBindingSet<MainActivity, MainViewModel>();
 
             // Get our button from the layout resource,
             // and attach an event to it
