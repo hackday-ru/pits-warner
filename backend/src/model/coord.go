@@ -10,7 +10,3 @@ type Coord struct {
 type FindResult struct {
   Items []Coord
 }
-
-//func (Coord c) toRadians() float64 {
-//
-//}
