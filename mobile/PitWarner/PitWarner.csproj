@@ -89,6 +89,9 @@
     <Reference Include="MvvmCross.Plugins.File">
       <HintPath>packages\MvvmCross.Plugin.File.4.1.0\lib\portable-net45+win+wpa81+wp80\MvvmCross.Plugins.File.dll</HintPath>
     </Reference>
+    <Reference Include="MvvmCross.Plugins.Accelerometer">
+      <HintPath>packages\MvvmCross.Plugin.Accelerometer.4.1.0\lib\portable-net45+win+wpa81+wp80\MvvmCross.Plugins.Accelerometer.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

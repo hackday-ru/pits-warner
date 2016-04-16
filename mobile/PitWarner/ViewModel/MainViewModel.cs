@@ -13,7 +13,7 @@ namespace PitWarner.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-
+        const int DISTANCE_LIMIT = 100;
 
         readonly IApiService _apiService;
         readonly IDataBaseService _dbService;
@@ -29,28 +29,11 @@ namespace PitWarner.ViewModels
             _watcher = watcher;
         }
 
-        public async override void Start()
+        public override void Start()
         {
             base.Start();
 
             _watcher.Start(new MvxLocationOptions(), OnLocation, OnError);
-
-//            var pits = await _apiService.GetPits(_lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, Variables.Radius, null);
-
-            var pits = await _apiService.GetPits(59.8950, 30.3168, Variables.Radius, null);
-
-            _dbService.SaveData (pits);
-
-
-//            var pits = new List<PitModel>
-//            { 
-//                new PitModel { Lat = 0, Lon = 0 },
-//                new PitModel { Lat = 0, Lon = 10 },
-//                    new PitModel { Lat = 10, Lon = 10 },
-//                    new PitModel { Lat = 10, Lon = 0 },
-//            };
-//
-//            var isContain = GeoCalc.InPoly(pits, new PitModel{ Lat = -1, Lon = 5 });
         }
 
         private double _lat;
@@ -81,9 +64,23 @@ namespace PitWarner.ViewModels
             }
         }
 
+        private int _countOfDots;
+        public int CountOfDots
+        {
+            get
+            { 
+                return _countOfDots; 
+            }
+            set
+            { 
+                _countOfDots = value; 
+                RaisePropertyChanged(() => CountOfDots);
+            }
+        }
+
         #region Location Methods
 
-        private void OnLocation(MvxGeoLocation currentLocation)
+        private async void OnLocation(MvxGeoLocation currentLocation)
         {
             _lastLocation = currentLocation;
 
@@ -92,6 +89,19 @@ namespace PitWarner.ViewModels
                 Lat = _lastLocation.Coordinates.Latitude;
                 Lon = _lastLocation.Coordinates.Longitude;
             }
+
+//            var pits = await _apiService.GetPits(59.8950, 30.3168, Variables.Radius, null);
+
+
+            _pits = _dbService.ReadData();
+
+            if (_pits == null || _pits.Count == 0)
+            {
+                _pits = await _apiService.GetPits(_lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, Variables.Radius, null);
+                _dbService.SaveData (_pits);
+            }
+
+            Process(_pits);
         }
 
         private void OnError(MvxLocationError error)
@@ -107,33 +117,37 @@ namespace PitWarner.ViewModels
             get
             { 
                 _showPits = _showPits ?? new MvxCommand(async () => {
-
-//                    var data = GeoCalc.MakeRectangle();
-//                    Debug.WriteLine(data);
+                    
 
                 });
                 return _showPits;
             }
         }
 
-        //void PitProcess(List<PitModel> pits)
-        //{
-        //    if (_lastLocation == null)
-        //        return;
 
-        //    var nearPoints = new List<PitModel>();
+        void Process(List<PitModel> pits)
+        {
+            if (_lastLocation == null)
+                return;
 
-        //    foreach (var pit in pits)
-        //    {
-        //        var distanceToPit = GeoCalc.GetDistanceBetween2Points(
-        //            pit,
-        //            new PitModel { lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude, at = _lastLocation.Coordinates.Altitude ?? 0 }
-        //        );
+            var nearPoints = new List<PitModel>();
 
-        //        if (distanceToPit < DISTANCE_LIMIT)
-        //            nearPoints.Add(pit);
-        //    }
-        //}
+            foreach (var pit in pits)
+            {
+                var distanceToPit = GeoCalc.GetDistanceBetween2Points(
+                    pit,
+                    new PitModel { lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude, at = _lastLocation.Coordinates.Altitude ?? 0 }
+//                    new PitModel { lat = 59.8950, lng = 30.3168, at = 0 }
+                );
+
+                Debug.WriteLine(distanceToPit);
+
+                if (distanceToPit < DISTANCE_LIMIT)
+                    nearPoints.Add(pit);
+
+                CountOfDots = nearPoints.Count;
+            }
+        }
     }
 }
 

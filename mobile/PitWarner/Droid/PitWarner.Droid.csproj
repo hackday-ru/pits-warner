@@ -91,6 +91,12 @@
     <Reference Include="MvvmCross.Plugins.File.Droid">
       <HintPath>..\packages\MvvmCross.Plugin.File.4.1.0\lib\MonoAndroid\MvvmCross.Plugins.File.Droid.dll</HintPath>
     </Reference>
+    <Reference Include="MvvmCross.Plugins.Accelerometer">
+      <HintPath>..\packages\MvvmCross.Plugin.Accelerometer.4.1.0\lib\MonoAndroid\MvvmCross.Plugins.Accelerometer.dll</HintPath>
+    </Reference>
+    <Reference Include="MvvmCross.Plugins.Accelerometer.Droid">
+      <HintPath>..\packages\MvvmCross.Plugin.Accelerometer.4.1.0\lib\MonoAndroid\MvvmCross.Plugins.Accelerometer.Droid.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PitWarner.csproj">
@@ -106,6 +112,7 @@
     <Compile Include="Bootstrap\LocationPluginBootstrap.cs" />
     <Compile Include="Bootstrap\SqlitePluginBootstrap.cs" />
     <Compile Include="Bootstrap\FilePluginBootstrap.cs" />
+    <Compile Include="Bootstrap\AccelerometerPluginBootstrap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
