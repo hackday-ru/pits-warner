@@ -114,11 +114,24 @@ func getCHandler(w http.ResponseWriter, r *http.Request) {
 func getJA(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Access-Control-Allow-Origin", "*")
   w.Header().Set("Content-Type", "application/json")
-  w.Write([]byte("{1:[{lat: 11.5962 , lng: 6.14562}," +
-            "{lat: 11.5962 , lng: 6.14562}," +
-            "{lat: 11.5962 , lng: 6.14562}," +
-            "{lat: 11.5962 , lng: 6.14562}," +
-            "{lat: 11.5962 , lng: 6.14562}]}"))
+  w.Write([]byte(`{
+    "0": {
+        "lat": 59.89444,
+        "lng": 30.26417
+    },
+    "1": {
+        "lat": 59.9458321,
+        "lng": 30.4765999
+    },
+    "3": {
+        "lat": 59.8845205,
+        "lng": 29.8843764
+    },
+    "4": {
+        "lat": 60.010483,
+        "lng": 30.6571437
+    }
+}`))
 }
 
 func toString(v float64) string {
