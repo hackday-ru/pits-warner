@@ -5,6 +5,7 @@ import (
   "github.com/gocql/gocql"
   "model"
   "log"
+  "strconv"
 )
 
 type CompoundConnector struct  {
@@ -24,6 +25,11 @@ func (connector *CompoundConnector) Init(redisAddr, cassAddr string)  {
   })
 }
 
+var MARKERS = "markers"
+
+func toString(v float64) string  {
+  return strconv.FormatFloat(float64(v), 'f', 5, 64)
+}
 
 
 func (writer CompoundConnector) Write(rec model.InputRecord)  {
