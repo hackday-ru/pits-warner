@@ -1,6 +1,9 @@
 ﻿using System;
 using MvvmCross.Core.ViewModels;
 using MvvmCross.Platform.IoC;
+using System.Diagnostics;
+using MvvmCross.Platform;
+using MvvmCross.Plugins.File;
 
 namespace PitWarner
 {
@@ -17,6 +20,8 @@ namespace PitWarner
                 .AsInterfaces()
                 .RegisterAsLazySingleton();
 
+            Debug.WriteLine(Mvx.Resolve<IMvxFileStore>().NativePath(""));
+            Mvx.Resolve<IDataBaseService>().InitDB();
 
             RegisterAppStart<ViewModels.MainViewModel>();
         }

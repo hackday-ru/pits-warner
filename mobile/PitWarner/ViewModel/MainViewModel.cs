@@ -7,29 +7,39 @@ using MvvmCross.Platform;
 using System.Collections.Generic;
 using System.Linq;
 using MvvmCross.Plugins.Location;
+using System.Diagnostics;
 
 namespace PitWarner.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        const double DISTANCE_LIMIT = 300; //в метрах
+
+
         readonly IApiService _apiService;
+        readonly IDataBaseService _dbService;
         private readonly IMvxLocationWatcher _watcher;
 
         List<PitModel> _pits;
         MvxGeoLocation _lastLocation;
 
-        public MainViewModel(IApiService apiService, IMvxLocationWatcher watcher)
+        public MainViewModel(IApiService apiService, IDataBaseService dbService, IMvxLocationWatcher watcher)
         {
             _apiService = apiService;
+            _dbService = dbService;
             _watcher = watcher;
         }
 
-        public override void Start()
+        public async override void Start()
         {
             base.Start();
 
             _watcher.Start(new MvxLocationOptions(), OnLocation, OnError);
+
+//            var pits = await _apiService.GetPits(_lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, Variables.Radius, null);
+
+            var pits = await _apiService.GetPits(59.8950, 30.3168, Variables.Radius, null);
+
+            _dbService.SaveData (pits);
 
 
 //            var pits = new List<PitModel>
@@ -98,34 +108,32 @@ namespace PitWarner.ViewModels
             { 
                 _showPits = _showPits ?? new MvxCommand(async () => {
 
-                    _pits = await _apiService.GetPits(_lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, null);
-
-                    if(_pits != null && _pits.Any())
-                        PitProcess(_pits);
+//                    var data = GeoCalc.MakeRectangle();
+//                    Debug.WriteLine(data);
 
                 });
                 return _showPits;
             }
         }
 
-        void PitProcess(List<PitModel> pits)
-        {
-            if (_lastLocation == null)
-                return;
+        //void PitProcess(List<PitModel> pits)
+        //{
+        //    if (_lastLocation == null)
+        //        return;
 
-            var nearPoints = new List<PitModel>();
+        //    var nearPoints = new List<PitModel>();
 
-            foreach (var pit in pits)
-            {
-                var distanceToPit = GeoCalc.GetDistanceBetween2Points(
-                    pit,
-                    new PitModel { Lat = _lastLocation.Coordinates.Latitude, Lon = _lastLocation.Coordinates.Longitude, At = _lastLocation.Coordinates.Altitude ?? 0 }
-                );
+        //    foreach (var pit in pits)
+        //    {
+        //        var distanceToPit = GeoCalc.GetDistanceBetween2Points(
+        //            pit,
+        //            new PitModel { lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude, at = _lastLocation.Coordinates.Altitude ?? 0 }
+        //        );
 
-                if (distanceToPit < DISTANCE_LIMIT)
-                    nearPoints.Add(pit);
-            }
-        }
+        //        if (distanceToPit < DISTANCE_LIMIT)
+        //            nearPoints.Add(pit);
+        //    }
+        //}
     }
 }
 

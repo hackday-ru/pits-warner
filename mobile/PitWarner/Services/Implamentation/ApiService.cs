@@ -16,11 +16,13 @@ namespace PitWarner
 
         #region IApiService implementation
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<PitModel>> GetPits(double lat, double lon, System.Threading.CancellationTokenSource token)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<PitModel>> GetPits(double lat, double lon, int radius, System.Threading.CancellationTokenSource token)
         {
             try
             {
-                var response = await _httpService.Get("какой-то url для возврата pit's", token);
+                var url = Variables.BASE_HOST + string.Format ("/raw?lat={0}&lng={1}&radius={2}", lat, lon, radius);
+
+                var response = await _httpService.Get(url, token);
                 if (response != null) {
                     var data = await response.Content.ReadAsStringAsync ();
                     var pits = JsonConvert.DeserializeObject<List<PitModel>> (data);

@@ -106,6 +106,21 @@
     <Reference Include="MvvmCross.Plugins.Location.iOS">
       <HintPath>..\packages\MvvmCross.Plugin.Location.4.1.0\lib\Xamarin.iOS10\MvvmCross.Plugins.Location.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="SQLite.Net">
+      <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net.Async">
+      <HintPath>..\packages\SQLite.Net.Async-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.Async.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net.Platform.XamarinIOS.Unified">
+      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
+    </Reference>
+    <Reference Include="MvvmCross.Plugins.Sqlite">
+      <HintPath>..\packages\MvvmCross.Plugin.SQLitePCL.4.1.0\lib\Xamarin.iOS10\MvvmCross.Plugins.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="MvvmCross.Plugins.Sqlite.iOS">
+      <HintPath>..\packages\MvvmCross.Plugin.SQLitePCL.4.1.0\lib\Xamarin.iOS10\MvvmCross.Plugins.Sqlite.iOS.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PitWarner.csproj">
@@ -139,6 +154,7 @@
     </Compile>
     <Compile Include="Setup.cs" />
     <Compile Include="Bootstrap\LocationPluginBootstrap.cs" />
+    <Compile Include="Bootstrap\SqlitePluginBootstrap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
