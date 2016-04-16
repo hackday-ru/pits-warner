@@ -25,7 +25,7 @@ func (connector *CompoundConnector) Init(redisAddr, cassAddr string)  {
     Password: "", // no password set
     DB:       0,  // use default DB
   })
-  conn = connector.RedisConnector
+  conn = *connector
 }
 
 func getConn() CompoundConnector{
