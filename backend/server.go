@@ -182,7 +182,7 @@ func becomeDispatcher() {
 	http.HandleFunc("/addMock", addMockHandler)
 	http.HandleFunc("/getMock", getMockHandler)
 	http.HandleFunc("/addCMock", addCHandler)
-	http.HandleFunc("/getCMock", getCHandler)
+	//http.HandleFunc("/getCMock", getCHandler)
 
 	http.HandleFunc("/pits", getJA)
 	http.HandleFunc("/raw", getRaw)
