@@ -12,24 +12,24 @@ import (
   //"github.com/gocql/gocql"
   "github.com/satori/go.uuid"
   "strconv"
-  "encoding/json"
+  //"encoding/json"
 )
 
 var conn = new(utils.CompoundConnector)
 
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
-
-  h1 := model.GeoData { Lat:10, Lng:20 }
-  h2 := model.GeoData{ Lat:11.21312, Lng:20.1232 }
-  res := model.FindResult{ []model.GeoData{ h1, h2} }
-  js, err := json.Marshal(res)
-  if err != nil {
-    http.Error(w, err.Error(), http.StatusInternalServerError)
-    return
-  }
-  w.Header().Set("Content-Type", "application/json")
-  w.Write(js)
+  //
+  //h1 := model.GeoData { Lat:10, Lng:20 }
+  //h2 := model.GeoData{ Lat:11.21312, Lng:20.1232 }
+  //res := model.FindResult{ []model.GeoData{ h1, h2} }
+  //js, err := json.Marshal(res)
+  //if err != nil {
+  //  http.Error(w, err.Error(), http.StatusInternalServerError)
+  //  return
+  //}
+  //w.Header().Set("Content-Type", "application/json")
+  //w.Write(js)
   fmt.Fprintf(w, "yo")
 }
 
@@ -48,6 +48,9 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 
   fmt.Fprintf(w, "<div>%s</div>", val)
 }
+
+
+
 
 func addCHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
@@ -94,6 +97,16 @@ func getCHandler(w http.ResponseWriter, r *http.Request) {
   w.Write([]byte(sl))
 }
 
+
+func getJA(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte("[{lat: 11.5962 , lng: 6.14562}," +
+            "{lat: 11.5962 , lng: 6.14562}," +
+            "{lat: 11.5962 , lng: 6.14562}," +
+            "{lat: 11.5962 , lng: 6.14562}," +
+            "{lat: 11.5962 , lng: 6.14562}]"))
+}
+
 func toString(v float64) string {
   return strconv.FormatFloat(float64(v), 'f', 5, 64)
 }
@@ -108,5 +121,8 @@ func main() {
   http.HandleFunc("/getMock", getMockHandler)
   http.HandleFunc("/addCMock", addCHandler)
   http.HandleFunc("/getCMock", getCHandler)
+
+  http.HandleFunc("/pits", getJA)
+
 	http.ListenAndServe(":8080", nil)
 }
