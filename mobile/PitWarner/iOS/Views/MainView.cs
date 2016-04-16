@@ -19,7 +19,7 @@ namespace PitWarner.iOS
             base.ViewDidLoad();
 
             var set = this.CreateBindingSet<MainView, MainViewModel>();
-            set.Bind(StartButton).To(vm => vm.CancelCollectData);
+            set.Bind(StartButton).To(vm => vm.ShowPits);
             set.Apply();
         }
 

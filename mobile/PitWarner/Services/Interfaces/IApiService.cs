@@ -7,7 +7,7 @@ namespace PitWarner
 {
     public interface IApiService
     {
-        Task<List<PitModel>> GetPits(CancellationTokenSource token);
+        Task<List<PitModel>> GetPits(double lat, double lon, CancellationTokenSource token);
     }
 }
 

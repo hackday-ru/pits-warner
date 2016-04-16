@@ -42,6 +42,7 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\PitModel.cs" />
     <Compile Include="Services\Implamentation\ApiService.cs" />
+    <Compile Include="Helpers\GeoCalc.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -82,5 +83,6 @@
     <Folder Include="Services\" />
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Services\Implamentation\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

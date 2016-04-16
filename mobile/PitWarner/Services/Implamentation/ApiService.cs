@@ -16,7 +16,7 @@ namespace PitWarner
 
         #region IApiService implementation
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<PitModel>> GetPits(System.Threading.CancellationTokenSource token)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<PitModel>> GetPits(double lat, double lon, System.Threading.CancellationTokenSource token)
         {
             try
             {
