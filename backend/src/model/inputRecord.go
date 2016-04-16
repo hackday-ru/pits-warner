@@ -11,13 +11,16 @@ import (
 
 type InputRecord struct {
   Uid uuid.UUID
-  timestamp int64
-  geoX float64
-  geoY float64
-  geoZ float64
-  acX float64
-  acY float64
-  acZ float64
+  Timestamp int64
+  AcX float64
+  AcY float64
+  AcZ float64
+  Accuracy float64
+  Bearing float64
+  Speed float64
+  Longitude float64
+  Latitude float64
+  Altitude float64
 }
 
 func FromCSVFile(inReader io.Reader) []InputRecord {
@@ -27,7 +30,6 @@ func FromCSVFile(inReader io.Reader) []InputRecord {
     if err == io.EOF {
       break
     }
-
     //for value := range record {
     //  if len(record) != 10 {
     //    continue
@@ -36,7 +38,6 @@ func FromCSVFile(inReader io.Reader) []InputRecord {
     //  fmt.Println(record[])
     //}
     fmt.Println(record[0])
-
     fmt.Println("---------")
   }
   return []InputRecord{}

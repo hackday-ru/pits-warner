@@ -36,7 +36,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
   }
 
   writer.RedisConnector.GeoAdd(MARKERS, &redis.GeoLocation{
-    Longitude:rec.GeoY, Latitude: rec.GeoY, Name: rec.Uid.String()})
+    Longitude:rec.Longitude, Latitude: rec.Latitude, Name: rec.Uid.String()})
 
   session, _ := writer.CassConnector.CreateSession()
   defer session.Close()
@@ -47,6 +47,6 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
     "values (?, ?, ?, ?, ?, ?, ?, ?)",
     rec.Uid.String(),
     rec.Timestamp,
-    rec.GeoX, rec.GeoY, rec.GeoZ,
+    rec.Longitude, rec.Latitude, rec.Altitude,
     rec.AcX, rec.AcY, rec.AcZ).Exec()
 }

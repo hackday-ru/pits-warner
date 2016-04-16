@@ -43,12 +43,13 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
     Uid: uuid.NewV4(),
-    GeoX: 0.0,
-    GeoY: 0.0,
-    GeoZ: 0.0,
+    Longitude: 0.0,
+    Latitude: 0.0,
+    Altitude: 0.0,
     AcX: 0.0,
     AcY: 0.0,
-    AcZ: 0.0}
+    AcZ: 0.0,
+  }
 
   //conn.RedisConnector.Set("sample", "val", 0)
   conn.Write(rec)
@@ -66,12 +67,16 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 func addCHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
     Uid: uuid.NewV4(),
-    GeoX: 0.0,
-    GeoY: 0.0,
-    GeoZ: 0.0,
+    Longitude: 0.0,
+    Latitude: 0.0,
+    Altitude: 0.0,
     AcX: 0.0,
     AcY: 0.0,
-    AcZ: 0.0}
+    AcZ: 0.0,
+    Accuracy: 0.0,
+    Bearing: 0.0,
+    Speed: 0.0,
+  }
 
   session, _ := conn.CassConnector.CreateSession()
   defer session.Close()
@@ -82,7 +87,7 @@ func addCHandler(w http.ResponseWriter, r *http.Request) {
     "values (?, ?, ?, ?, ?, ?, ?, ?)",
     rec.Uid.String(),
     rec.Timestamp,
-    rec.GeoX, rec.GeoY, rec.GeoZ,
+    rec.Longitude, rec.Latitude, rec.Altitude,
     rec.AcX, rec.AcY, rec.AcZ).Exec(); err != nil {
     log.Fatal(err)
   }
