@@ -6,11 +6,11 @@ import (
 
 type InputRecord struct {
   Uid uuid.UUID
-  timestamp int64
-  geoX float64
-  geoY float64
-  geoZ float64
-  acX float64
-  acY float64
-  acZ float64
+  Timestamp int64
+  GeoX float64
+  GeoY float64
+  GeoZ float64
+  AcX float64
+  AcY float64
+  AcZ float64
 }
