@@ -1,24 +1,16 @@
-package main
+package backend
 
 import (
 	"fmt"
 	"net/http"
   "encoding/json"
+  "model"
 )
 
-type Hollow struct {
-  Lng float64
-  Lat float64
-}
-
-type FindResult struct {
-  Items []Hollow
-}
-
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
-  h1 := Hollow{ Lat:10, Lng:20 }
-  h2 := Hollow{ Lat:11.21312, Lng:20.1232 }
-  res := FindResult{ []Hollow{h1, h2} }
+  h1 := model.Coord { Lat:10, Lng:20 }
+  h2 := model.Coord{ Lat:11.21312, Lng:20.1232 }
+  res := model.FindResult{ []model.Coord{ h1, h2} }
   js, err := json.Marshal(res)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
