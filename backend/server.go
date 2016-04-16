@@ -203,6 +203,7 @@ func main() {
 	//ticker := time.NewTicker(time.Second / 2)
 	val, err := conn.RedisConnector.Get("alive").Result()
 	fmt.Printf("%s\n", val)
+	becomeDispatcher()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
