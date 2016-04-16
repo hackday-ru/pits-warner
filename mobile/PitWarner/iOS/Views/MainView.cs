@@ -19,6 +19,8 @@ namespace PitWarner.iOS
             base.ViewDidLoad();
 
             var set = this.CreateBindingSet<MainView, MainViewModel>();
+            set.Bind(StartButton).To(vm => vm.CancelCollectData);
+            set.Apply();
         }
 
         public override void DidReceiveMemoryWarning()

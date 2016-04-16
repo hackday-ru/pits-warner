@@ -56,5 +56,8 @@
   <ItemGroup>
     <Folder Include="ViewModel\" />
     <Folder Include="Model\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Interfaces\" />
+    <Folder Include="Services\Implamentation\" />
   </ItemGroup>
 </Project>
