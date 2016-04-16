@@ -7,24 +7,40 @@ $( document ).ready(function() {
     var map = L.map('map');
     var markers = [];
 
+    /*var marker_icon = L.icon({
+        iconUrl: './img/marker1.png',
+        iconSize: [16, 16]
+    });*/
+
+    var marker_icon = L.divIcon({className: 'icon'});
+    
     function moveend() {
-        //console.log("lat: " + map.getCenter().lat + "; lng: " + map.getCenter().lng + "; zoom: " + map.getZoom());
         var bounds = map.getBounds();
-        var points = grable(bounds._northEast.lat, bounds._northEast.lng, bounds._southWest.lat, bounds._southWest.lng);
-        //console.log(points.length);
         for (var i = 0, n = markers.length; i < n; ++i) {
             map.removeLayer(markers[i]);
         }
         markers = [];
-        for (var i = 0, n = points.length; i < n; ++i) {
-            //console.log(points[i].lat + "; " + points[i].lng);
-            var marker = L.marker([Number(points[i].lat), Number(points[i].lng)]).addTo(map);
-            markers.push(marker);
-        }
+
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            url: 'http://52.58.116.75:8080/pits?lat0=' + bounds._northEast.lat + '&lon0=' + bounds._northEast.lng +
+            '&lat1=' + bounds._southWest.lat + '&lon1=' + bounds._southWest.lng,
+            success: function(data){
+                console.log("success");
+                $.each(data, function (key, val) {
+                    //console.log(val.lat + "; " + val.lng);
+                    markers.push(L.marker([Number(val.lat), Number(val.lng)], {icon: marker_icon}).addTo(map));
+                })
+            },
+            error: function (err) {
+                console.log("err");
+                console.log(err);
+            }
+        });
     }
     
     map.on('moveend', moveend);
-
     map.setView([59.89444, 30.26417], 10); //[51.505, -0.09]
 
     var mapLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
