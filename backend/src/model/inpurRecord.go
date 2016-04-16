@@ -14,3 +14,9 @@ type InputRecord struct {
   acY float64,
   acZ float64
 }
+
+func FromFile(path string) []InputRecord {
+  var res []InputRecord
+  //res.
+  return res
+}
