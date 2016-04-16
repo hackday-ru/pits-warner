@@ -59,8 +59,9 @@ func (writer CompoundConnector) ReadByLocation(c model.Coord, radius float64) mo
 func (writer CompoundConnector) Write(rec model.InputRecord)  {
   acc := toString(rec.AcX) + ":" + toString(rec.AcY) + ":" + toString(rec.AcZ)
 
+  uid := uuid.NewV4()
 
-  err := writer.RedisConnector.Set(rec.Uid.String(), acc, 0).Err()
+  err := writer.RedisConnector.Set(uid, acc, 0).Err()
   if err != nil {
     log.Fatal(err)
   }
@@ -75,7 +76,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
     "INSERT INTO geodata" +
     "(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
     "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
-    uuid.NewV4(),
+    uid,
     rec.Timestamp,
     rec.Longitude, rec.Latitude, rec.Altitude,
     rec.AcX, rec.AcY, rec.AcZ,
