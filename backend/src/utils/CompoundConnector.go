@@ -13,7 +13,7 @@ type CompoundConnector struct  {
 func (connector *CompoundConnector) Init(redisAddr, cassAddr string)  {
   connector.CassConnector = gocql.NewCluster(cassAddr)
   connector.CassConnector.Keyspace = "geodb"
-  connector.CassConnector.Consistency = gocql.Quorum
+  //connector.CassConnector.Consistency = gocql.Quorum
 
   connector.RedisConnector = redis.NewClient(&redis.Options{
     Addr:     redisAddr,

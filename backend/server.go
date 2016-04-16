@@ -13,6 +13,7 @@ import (
   "github.com/satori/go.uuid"
   "strconv"
   //"encoding/json"
+  "log"
 )
 
 var conn = new(utils.CompoundConnector)
@@ -54,7 +55,7 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 
 func addCHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
-    Uid: uuid.Nil,
+    Uid: uuid.NewV4(),
     GeoX: 0.0,
     GeoY: 0.0,
     GeoZ: 0.0,
@@ -65,14 +66,16 @@ func addCHandler(w http.ResponseWriter, r *http.Request) {
   session, _ := conn.CassConnector.CreateSession()
   defer session.Close()
 
-  session.Query(
+  if err := session.Query(
     "INSERT INTO geodata" +
-    "(uuid, time, geoX, geoY, geoZ, acX, acY, acZ)" +
+    "(id, time, geoX, geoY, geoZ, acX, acY, acZ)" +
     "values (?, ?, ?, ?, ?, ?, ?, ?)",
-    rec.Uid,
+    rec.Uid.String(),
     rec.Timestamp,
     rec.GeoX, rec.GeoY, rec.GeoZ,
-    rec.AcX, rec.AcY, rec.AcZ).Exec()
+    rec.AcX, rec.AcY, rec.AcZ).Exec(); err != nil {
+    log.Fatal(err)
+  }
 }
 
 func getCHandler(w http.ResponseWriter, r *http.Request) {
@@ -99,6 +102,7 @@ func getCHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func getJA(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Access-Control-Allow-Origin", "*")
   w.Header().Set("Content-Type", "application/json")
   w.Write([]byte("[{lat: 11.5962 , lng: 6.14562}," +
             "{lat: 11.5962 , lng: 6.14562}," +
