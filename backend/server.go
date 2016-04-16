@@ -16,11 +16,12 @@ import (
   "log"
   "time"
   "controllers"
+  "math/rand"
 )
 
 var conn = new(utils.CompoundConnector)
 
-const name  = "aliveddddcdh"
+const name  = "aliveddd"
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
@@ -37,8 +38,6 @@ func pointsHandler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "yo")
 }
 
-
-
 func indexHandler(w http.ResponseWriter, r *http.Request) {
   var title = "Hello to REST serverr"
   var body = "use get / post to /points"
@@ -48,7 +47,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
     Uid: uuid.NewV4(),
-    Timestamp: 0.0,
+    Timestamp: 0,
     Longitude: 0.0,
     Latitude: 0.0,
     Altitude: 0.0,
