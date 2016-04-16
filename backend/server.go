@@ -15,6 +15,7 @@ import (
   //"encoding/json"
   "log"
   "time"
+  "controllers"
 )
 
 var conn = new(utils.CompoundConnector)
@@ -182,6 +183,7 @@ func becomeDispatcher() {
 	http.HandleFunc("/addMock", addMockHandler)
 	http.HandleFunc("/getMock", getMockHandler)
 	http.HandleFunc("/addCMock", addCHandler)
+  http.HandleFunc("/measures", controllers.MeasureHandler)
 	//http.HandleFunc("/getCMock", getCHandler)
 
 	http.HandleFunc("/pits", getJA)
