@@ -186,4 +186,41 @@ func main() {
 
 	http.ListenAndServe(":8080", nil)
 
+
+//func main() {
+//
+//  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
+//
+//  http.HandleFunc("/hollows", pointsHandler)
+//  http.HandleFunc("/", indexHandler)
+//  http.HandleFunc("/addMock", addMockHandler)
+//  http.HandleFunc("/getMock", getMockHandler)
+//  http.HandleFunc("/addCMock", addCHandler)
+//  http.HandleFunc("/getCMock", getCHandler)
+//
+//  http.HandleFunc("/pits", getJA)
+//  http.HandleFunc("/raw", getRaw)
+//
+//
+//	go updateRedisAlive()
+//}
+
+func main() {
+
+	conn.Init("52.58.116.75:6379", "")
+	//conn.RedisConnector.Set("alive", "1", 0)
+	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
+	//ticker := time.NewTicker(time.Second / 2)
+	val, err := conn.RedisConnector.Get("alive").Result()
+	if err != nil {
+		fmt.Printf("Running in dispatcher mode\n")
+		go becomeHandler()
+		updateRedisAlive()
+		//panic(err)
+	} else {
+		fmt.Printf("updating keep alive2")
+	}
+	if (val == "") {
+		fmt.Printf("res1: %s\n", val)
+	}
 }
