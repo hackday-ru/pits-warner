@@ -16,11 +16,40 @@ import (
   "log"
   "time"
   "controllers"
+	"net"
 )
 
 var conn = new(utils.CompoundConnector)
 
-const name  = "alived1"
+var name string
+
+func setAliveField() {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		panic(err)
+	}
+
+	// handle err
+	for _, i := range ifaces {
+		addrs, err := i.Addrs()
+		if err != nil {
+			panic(err)
+		}
+		// handle err
+		for _, addr := range addrs {
+			var ip net.IP
+			switch v := addr.(type) {
+			case *net.IPNet:
+				ip = v.IP
+			case *net.IPAddr:
+				ip = v.IP
+			}
+			fmt.Println("%s", ip.String())
+			name = ip.String()
+			// process IP address
+		}
+	}
+}
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
@@ -222,7 +251,7 @@ func updateNodeAlive(i int){
 
 
 func main() {
-
+	setAliveField()
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
 
 	//conn.RedisConnector.Set("alive", "1", 0)
