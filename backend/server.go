@@ -41,7 +41,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
-  conn.RedisConnector.Set("sample", "val", 0)
+  rec := model.InputRecord{
+    Uid: uuid.NewV4(),
+    GeoX: 0.0,
+    GeoY: 0.0,
+    GeoZ: 0.0,
+    AcX: 0.0,
+    AcY: 0.0,
+    AcZ: 0.0}
+
+  //conn.RedisConnector.Set("sample", "val", 0)
+  conn.Write(rec)
 }
 func getMockHandler(w http.ResponseWriter, r *http.Request) {
   val, _ := conn.RedisConnector.Get("sample").Result()
@@ -91,7 +101,7 @@ func getCHandler(w http.ResponseWriter, r *http.Request) {
   iter := session.Query(`SELECT geoX, geoY FROM geodata`).Iter()
   for iter.Scan(&geoX, &geoY) {
     //fmt.Println("Tweet:", geoX, geoY)
-    str += "{lat: " + toString(geoX) + "lng: " + toString(geoY) + "},"
+    str += "{lat: " + toString(geoX) + ",lng: " + toString(geoY) + "},"
   }
 
   sl := str[0: len(str) - 1]
@@ -104,11 +114,11 @@ func getCHandler(w http.ResponseWriter, r *http.Request) {
 func getJA(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Access-Control-Allow-Origin", "*")
   w.Header().Set("Content-Type", "application/json")
-  w.Write([]byte("[{lat: 11.5962 , lng: 6.14562}," +
+  w.Write([]byte("{1:[{lat: 11.5962 , lng: 6.14562}," +
             "{lat: 11.5962 , lng: 6.14562}," +
             "{lat: 11.5962 , lng: 6.14562}," +
             "{lat: 11.5962 , lng: 6.14562}," +
-            "{lat: 11.5962 , lng: 6.14562}]"))
+            "{lat: 11.5962 , lng: 6.14562}]}"))
 }
 
 func toString(v float64) string {

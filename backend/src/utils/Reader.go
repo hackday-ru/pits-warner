@@ -10,7 +10,7 @@ type DBReader struct {
   CompoundConnector
 }
 
-func (reader DBReader) read() *model.FindResult {
+func (reader DBReader) Read() *model.FindResult {
   result := new(model.FindResult)
   return result
 }
