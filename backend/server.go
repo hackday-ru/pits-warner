@@ -35,21 +35,18 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
-  conn.RedisConnector.Set("sample", "val")
+  conn.RedisConnector.Set("sample", "val", 0)
 }
 func getMockHandler(w http.ResponseWriter, r *http.Request) {
   val, _ := conn.RedisConnector.Get("sample").Result()
+  //rad, _ := conn.RedisConnector.geo
 
   fmt.Fprintf(w, "<div>%s</div>", val)
 }
 
 
 func main() {
-  conn.Init("52.28.167.241:6379","")
-
-
-
-
+  conn.Init("52.58.116.75:6379","")
 
   http.HandleFunc("/hollows", pointsHandler)
   http.HandleFunc("/", indexHandler)
