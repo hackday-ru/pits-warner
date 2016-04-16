@@ -6,6 +6,7 @@ import (
   "model"
   "log"
   "strconv"
+  "github.com/satori/go.uuid"
 )
 
 var  conn CompoundConnector;
@@ -74,7 +75,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
     "INSERT INTO geodata" +
     "(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
     "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
-    rec.Uid.String(),
+    uuid.NewV4(),
     rec.Timestamp,
     rec.Longitude, rec.Latitude, rec.Altitude,
     rec.AcX, rec.AcY, rec.AcZ,
