@@ -70,7 +70,7 @@ func updateRedisAlive() {
 	conn.RedisConnector.Set("alive", "1", 0)
 	conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	fmt.Printf("updating keep alive\n")
-	time.Sleep(1 * time.Second)
+	time.Sleep(500 * time.Millisecond)
 	updateRedisAlive()
 }
 
@@ -175,41 +175,25 @@ func getRaw(w http.ResponseWriter, r *http.Request) {
 }
 
 
+func becomeDispatcher() {
+	http.HandleFunc("/hollows", pointsHandler)
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/addMock", addMockHandler)
+	http.HandleFunc("/getMock", getMockHandler)
+	http.HandleFunc("/addCMock", addCHandler)
+	http.HandleFunc("/getCMock", getCHandler)
 
-func becomeHandler() {
-
-  conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
-
-  http.HandleFunc("/hollows", pointsHandler)
-  http.HandleFunc("/", indexHandler)
-  http.HandleFunc("/addMock", addMockHandler)
-  http.HandleFunc("/getMock", getMockHandler)
-  http.HandleFunc("/addCMock", addCHandler)
-  http.HandleFunc("/getCMock", getCHandler)
-
-  http.HandleFunc("/pits", getJA)
-  http.HandleFunc("/raw", getRaw)
-
-  http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/pits", getJA)
+	http.HandleFunc("/raw", getRaw)
+	http.ListenAndServe(":8080", nil)
 }
 
-//func main() {
-//
-//  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
-//
-//  http.HandleFunc("/hollows", pointsHandler)
-//  http.HandleFunc("/", indexHandler)
-//  http.HandleFunc("/addMock", addMockHandler)
-//  http.HandleFunc("/getMock", getMockHandler)
-//  http.HandleFunc("/addCMock", addCHandler)
-//  http.HandleFunc("/getCMock", getCHandler)
-//
-//  http.HandleFunc("/pits", getJA)
-//  http.HandleFunc("/raw", getRaw)
-//
-//
-//	go updateRedisAlive()
-//}
+func becomeHandler(){
+	fmt.Printf("Waiting for events\n")
+	time.Sleep(1 * time.Second)
+	becomeHandler()
+}
+
 
 func main() {
 
@@ -218,15 +202,44 @@ func main() {
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
 	val, err := conn.RedisConnector.Get("alive").Result()
+	fmt.Printf("%s\n", val)
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
-		go becomeHandler()
+		go becomeDispatcher()
 		updateRedisAlive()
 		//panic(err)
 	} else {
-		fmt.Printf("updating keep alive2")
+		fmt.Printf("Running in handler mode")
+		becomeHandler()
 	}
 	if (val == "") {
 		fmt.Printf("res1: %s\n", val)
 	}
 }
+//quit := make(chan struct{})
+//go func() {
+//	for {
+//
+//		select {
+//		case <-ticker.C:
+//			val, err := conn.RedisConnector.Get("alive").Result()
+//			fmt.Printf("updating keep alive")
+//			if err != nil {
+//				fmt.Printf("updating keep alive")
+//				becomeHandler()
+//				//panic(err)
+//			} else {
+//				fmt.Printf("updating keep alive")
+//			}
+//			if (val == "") {
+//				fmt.Printf("res1: %s\n", val)
+//			}
+//		//conn.RedisConnector.Expire();
+//		//becomeHandler()
+//		//ticker.Stop()
+//		case <-quit:
+//			ticker.Stop()
+//			return
+//		}
+//	}
+//}()
