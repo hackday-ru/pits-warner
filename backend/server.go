@@ -7,7 +7,11 @@ import (
   //"model"
   //"github.com/satori/go.uuid"
 
+  "utils"
 )
+
+var conn = new(utils.CompoundConnector)
+
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -30,8 +34,26 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", title, body)
 }
 
+func addMockHandler(w http.ResponseWriter, r *http.Request) {
+  conn.RedisConnector.Set("sample", "val")
+}
+func getMockHandler(w http.ResponseWriter, r *http.Request) {
+  val, _ := conn.RedisConnector.Get("sample").Result()
+
+  fmt.Fprintf(w, "<div>%s</div>", val)
+}
+
+
 func main() {
+  conn.Init("52.28.167.241:6379","")
+
+
+
+
+
   http.HandleFunc("/hollows", pointsHandler)
   http.HandleFunc("/", indexHandler)
+  http.HandleFunc("/addMock", addMockHandler)
+  http.HandleFunc("/getMock", getMockHandler)
 	http.ListenAndServe(":8080", nil)
 }
