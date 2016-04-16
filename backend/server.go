@@ -139,6 +139,26 @@ func toString(v float64) string {
 }
 
 
+func getRaw(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Access-Control-Allow-Origin", "*")
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte(`[{
+"lat": 59.89444,
+"lng": 30.26417
+}, {
+"lat": 59.9458321,
+"lng": 30.4765999
+}, {
+"lat": 59.8845205,
+"lng": 29.8843764
+}, {
+"lat": 60.010483,
+"lng": 30.6571437
+}]`))
+}
+
+
+
 func main() {
 
   conn.Init("52.58.116.75:6379","52.58.116.75:9042")
@@ -151,6 +171,7 @@ func main() {
   http.HandleFunc("/getCMock", getCHandler)
 
   http.HandleFunc("/pits", getJA)
+  http.HandleFunc("/raw", getRaw)
 
 	http.ListenAndServe(":8080", nil)
 
