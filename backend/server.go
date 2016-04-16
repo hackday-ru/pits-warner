@@ -19,6 +19,7 @@ import (
 
 var conn = new(utils.CompoundConnector)
 
+const name  = "aliveddd"
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
@@ -67,8 +68,8 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateRedisAlive() {
-	conn.RedisConnector.Set("alive", "1", 0)
-	conn.RedisConnector.Expire("alive", 5 * 1000000000)
+	conn.RedisConnector.Set(name, "1", 0)
+	conn.RedisConnector.Expire(name, 5 * 1000000000)
 	fmt.Printf("updating keep alive\n")
 	time.Sleep(500 * time.Millisecond)
 	updateRedisAlive()
@@ -185,13 +186,24 @@ func becomeDispatcher() {
 
 	http.HandleFunc("/pits", getJA)
 	http.HandleFunc("/raw", getRaw)
-	http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func becomeHandler(){
 	fmt.Printf("Waiting for events\n")
 	time.Sleep(1 * time.Second)
-	becomeHandler()
+}
+
+func updateNodeAlive(i int){
+	i += 1
+	conn.RedisConnector.LPushX("nodes", 1)
+	conn.RedisConnector.Expire("nodes", 5 * 1000000000)
+	fmt.Printf("updating keep alive %d \n", i)
+	time.Sleep(500 * time.Millisecond)
+	updateNodeAlive(i)
 }
 
 
@@ -201,7 +213,7 @@ func main() {
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
-	val, err := conn.RedisConnector.Get("alive").Result()
+	val, err := conn.RedisConnector.Get(name).Result()
 	fmt.Printf("%s\n", val)
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
@@ -210,7 +222,9 @@ func main() {
 		//panic(err)
 	} else {
 		fmt.Printf("Running in handler mode")
-		becomeHandler()
+		go becomeHandler()
+		updateNodeAlive(0)
+
 	}
 	if (val == "") {
 		fmt.Printf("res1: %s\n", val)
