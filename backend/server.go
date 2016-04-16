@@ -16,12 +16,11 @@ import (
   "log"
   "time"
   "controllers"
-  "math/rand"
 )
 
 var conn = new(utils.CompoundConnector)
 
-const name  = "aliveddd"
+const name  = "alived1"
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
