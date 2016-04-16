@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
-  //"encoding/json"
-  //"model"
-  //"github.com/satori/go.uuid"
+	//"encoding/json"
+	//"model"
+	//"github.com/satori/go.uuid"
 
-  "utils"
+	"utils"
+	"time"
   "model"
   //"github.com/gocql/gocql"
   "github.com/satori/go.uuid"
@@ -61,6 +62,13 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "<div>%s</div>", val)
 }
 
+func updateRedisAlive() {
+	conn.RedisConnector.Set("alive", "1", 0)
+	conn.RedisConnector.Expire("alive", 5 * 1000000000)
+	fmt.Printf("updating keep alive\n")
+	time.Sleep(1 * time.Second)
+	updateRedisAlive()
+}
 
 
 
@@ -161,23 +169,81 @@ func getRaw(w http.ResponseWriter, r *http.Request) {
 "lng": 30.6571437
 }]`))
 }
+func becomeHandler() {
+	  http.HandleFunc("/hollows", pointsHandler)
+	  http.HandleFunc("/", indexHandler)
+	  http.HandleFunc("/addMock", addMockHandler)
+	  http.HandleFunc("/getMock", getMockHandler)
+	  http.HandleFunc("/addCMock", addCHandler)
+	  http.HandleFunc("/getCMock", getCHandler)
+
+	  http.HandleFunc("/pits", getJA)
+	  http.HandleFunc("/raw", getRaw)
+	http.ListenAndServe(":8080", nil)
+}
 
 
+//func main() {
+//
+//  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
+//
+//  http.HandleFunc("/hollows", pointsHandler)
+//  http.HandleFunc("/", indexHandler)
+//  http.HandleFunc("/addMock", addMockHandler)
+//  http.HandleFunc("/getMock", getMockHandler)
+//  http.HandleFunc("/addCMock", addCHandler)
+//  http.HandleFunc("/getCMock", getCHandler)
+//
+//  http.HandleFunc("/pits", getJA)
+//  http.HandleFunc("/raw", getRaw)
+//
+//
+//	go updateRedisAlive()
+//}
 
 func main() {
 
-  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
-
-  http.HandleFunc("/hollows", pointsHandler)
-  http.HandleFunc("/", indexHandler)
-  http.HandleFunc("/addMock", addMockHandler)
-  http.HandleFunc("/getMock", getMockHandler)
-  http.HandleFunc("/addCMock", addCHandler)
-  http.HandleFunc("/getCMock", getCHandler)
-
-  http.HandleFunc("/pits", getJA)
-  http.HandleFunc("/raw", getRaw)
-
-	http.ListenAndServe(":8080", nil)
-
+	conn.Init("52.58.116.75:6379", "")
+	//conn.RedisConnector.Set("alive", "1", 0)
+	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
+	//ticker := time.NewTicker(time.Second / 2)
+	val, err := conn.RedisConnector.Get("alive").Result()
+	if err != nil {
+		fmt.Printf("Running in dispatcher mode\n")
+		go becomeHandler()
+		updateRedisAlive()
+		//panic(err)
+	} else {
+		fmt.Printf("updating keep alive2")
+	}
+	if (val == "") {
+		fmt.Printf("res1: %s\n", val)
+	}
 }
+	//quit := make(chan struct{})
+	//go func() {
+	//	for {
+	//
+	//		select {
+	//		case <-ticker.C:
+	//			val, err := conn.RedisConnector.Get("alive").Result()
+	//			fmt.Printf("updating keep alive")
+	//			if err != nil {
+	//				fmt.Printf("updating keep alive")
+	//				becomeHandler()
+	//				//panic(err)
+	//			} else {
+	//				fmt.Printf("updating keep alive")
+	//			}
+	//			if (val == "") {
+	//				fmt.Printf("res1: %s\n", val)
+	//			}
+	//		//conn.RedisConnector.Expire();
+	//		//becomeHandler()
+	//		//ticker.Stop()
+	//		case <-quit:
+	//			ticker.Stop()
+	//			return
+	//		}
+	//	}
+	//}()
