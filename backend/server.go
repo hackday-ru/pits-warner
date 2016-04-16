@@ -8,6 +8,7 @@ import (
   //"github.com/satori/go.uuid"
 
   "utils"
+  "model"
 )
 
 var conn = new(utils.CompoundConnector)
@@ -46,11 +47,14 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-  conn.Init("52.58.116.75:6379","")
 
-  http.HandleFunc("/hollows", pointsHandler)
-  http.HandleFunc("/", indexHandler)
-  http.HandleFunc("/addMock", addMockHandler)
-  http.HandleFunc("/getMock", getMockHandler)
-	http.ListenAndServe(":8080", nil)
+  model.CSVTest()
+
+
+  //conn.Init("52.58.116.75:6379","")
+  //http.HandleFunc("/hollows", pointsHandler)
+  //http.HandleFunc("/", indexHandler)
+  //http.HandleFunc("/addMock", addMockHandler)
+  //http.HandleFunc("/getMock", getMockHandler)
+	//http.ListenAndServe(":8080", nil)
 }
