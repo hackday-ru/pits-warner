@@ -195,24 +195,6 @@ func becomeHandler(){
 }
 
 
-//func main() {
-//
-//  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
-//
-//  http.HandleFunc("/hollows", pointsHandler)
-//  http.HandleFunc("/", indexHandler)
-//  http.HandleFunc("/addMock", addMockHandler)
-//  http.HandleFunc("/getMock", getMockHandler)
-//  http.HandleFunc("/addCMock", addCHandler)
-//  http.HandleFunc("/getCMock", getCHandler)
-//
-//  http.HandleFunc("/pits", getJA)
-//  http.HandleFunc("/raw", getRaw)
-//
-//
-//	go updateRedisAlive()
-//}
-
 func main() {
 
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
