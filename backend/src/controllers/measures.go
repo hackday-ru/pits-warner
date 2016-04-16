@@ -7,6 +7,7 @@ import (
   //"io"
   "model"
   "bufio"
+  "utils"
 )
 
 func MeasureHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,6 +35,10 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
     defer file.Close()
     
     items := model.FromCSVFile(bufio.NewReader(file))
+    
+    for _, e := range items {
+      utils.GetConn().Write(e)
+    }
 
     fmt.Fprintf(w, `
       processed %d items
