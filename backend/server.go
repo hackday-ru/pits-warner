@@ -20,7 +20,7 @@ import (
 
 var conn = new(utils.CompoundConnector)
 
-const name  = "aliveddd"
+const name  = "aliveddddcdh"
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
@@ -36,6 +36,8 @@ func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //w.Write(js)
   fmt.Fprintf(w, "yo")
 }
+
+
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
   var title = "Hello to REST serverr"
@@ -70,9 +72,9 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
 
 func updateRedisAlive() {
 	conn.RedisConnector.Set(name, "1", 0)
-	conn.RedisConnector.Expire(name, 5 * 1000000000)
+	conn.RedisConnector.PExpire(name, 500 * 1000000)
 	fmt.Printf("updating keep alive\n")
-	time.Sleep(500 * time.Millisecond)
+	time.Sleep(400 * time.Millisecond)
 	updateRedisAlive()
 }
 
@@ -200,12 +202,24 @@ func becomeHandler(){
 }
 
 func updateNodeAlive(i int){
-	i += 1
-	conn.RedisConnector.LPushX("nodes", 1)
-	conn.RedisConnector.Expire("nodes", 5 * 1000000000)
-	fmt.Printf("updating keep alive %d \n", i)
-	time.Sleep(500 * time.Millisecond)
-	updateNodeAlive(i)
+	val, err := conn.RedisConnector.Get(name).Result()
+	fmt.Printf("%s\n", val)
+	if err != nil {
+		fmt.Printf("Running in dispatcher mode\n")
+		go becomeDispatcher()
+		updateRedisAlive()
+		//panic(err)
+	} else {
+		fmt.Printf("Waiting connections\n")
+		i += 1
+		conn.RedisConnector.LPushX("nodes", 1)
+		conn.RedisConnector.Expire("nodes", 2 * time.Second)
+		fmt.Printf("updating keep alive %d \n", i)
+		time.Sleep(20 * time.Millisecond)
+		updateNodeAlive(i)
+
+	}
+
 }
 
 
@@ -216,8 +230,7 @@ func main() {
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
-	val, err := conn.RedisConnector.Get(name).Result()
-	fmt.Printf("%s\n", val)
+	err := conn.RedisConnector.Get(name).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
@@ -228,9 +241,6 @@ func main() {
 		go becomeHandler()
 		updateNodeAlive(0)
 
-	}
-	if (val == "") {
-		fmt.Printf("res1: %s\n", val)
 	}
 }
 //quit := make(chan struct{})
