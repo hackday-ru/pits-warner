@@ -65,8 +65,13 @@ func getMockHandler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "<div>%s</div>", val)
 }
 
-
-
+func updateRedisAlive() {
+	conn.RedisConnector.Set("alive", "1", 0)
+	conn.RedisConnector.Expire("alive", 5 * 1000000000)
+	fmt.Printf("updating keep alive\n")
+	time.Sleep(1 * time.Second)
+	updateRedisAlive()
+}
 
 func addCHandler(w http.ResponseWriter, r *http.Request) {
   rec := model.InputRecord{
@@ -170,9 +175,9 @@ func getRaw(w http.ResponseWriter, r *http.Request) {
 
 
 
-func main() {
+func becomeHandler() {
 
-  conn.Init("52.58.116.75:6379","52.58.116.75:9042")
+  conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
 
   http.HandleFunc("/hollows", pointsHandler)
   http.HandleFunc("/", indexHandler)
@@ -184,8 +189,8 @@ func main() {
   http.HandleFunc("/pits", getJA)
   http.HandleFunc("/raw", getRaw)
 
-	http.ListenAndServe(":8080", nil)
-
+  http.ListenAndServe(":8080", nil)
+}
 
 //func main() {
 //
