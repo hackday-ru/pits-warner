@@ -212,6 +212,7 @@ func updateNodeAlive(i int){
 func main() {
 
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
+
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)

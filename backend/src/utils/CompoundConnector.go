@@ -28,7 +28,7 @@ func (connector *CompoundConnector) Init(redisAddr, cassAddr string)  {
   conn = connector.RedisConnector
 }
 
-func getConn(){
+func getConn() CompoundConnector{
   return conn
 }
 
