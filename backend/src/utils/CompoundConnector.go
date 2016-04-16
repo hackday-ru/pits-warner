@@ -8,6 +8,8 @@ import (
   "strconv"
 )
 
+var  conn CompoundConnector;
+
 type CompoundConnector struct  {
   RedisConnector *redis.Client
   CassConnector *gocql.ClusterConfig
@@ -23,6 +25,11 @@ func (connector *CompoundConnector) Init(redisAddr, cassAddr string)  {
     Password: "", // no password set
     DB:       0,  // use default DB
   })
+  conn = *connector
+}
+
+func GetConn() CompoundConnector{
+  return conn
 }
 
 var MARKERS = "markers"
