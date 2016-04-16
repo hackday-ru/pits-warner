@@ -33,17 +33,17 @@ func toString(v float64) string  {
 
 func (writer CompoundConnector) ReadByLocation(c model.Coord, radius float64) model.FindResult {
   var res = []model.Coord{}
-  locs, _ := writer.RedisConnector.GeoRadius(MARKERS, c.Lat, c.Lng, redis.GeoRadiusQuery{
+  locs, _ := writer.RedisConnector.GeoRadius(MARKERS, c.Lat, c.Lng, &redis.GeoRadiusQuery{
     Radius: radius,
     // Can be m, km, ft, or mi. Default is km.
     Unit: "m" }).Result()
   for _, e := range(locs) {
-    res = append(res[:], &model.Coord{
+    res = append(res[:], model.Coord{
       Lat: e.Latitude,
       Lng: e.Longitude})
   }
 
-  return &model.FindResult{res}
+  return model.FindResult{res}
 }
 
 
