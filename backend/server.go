@@ -16,11 +16,26 @@ import (
   "log"
   "time"
   "controllers"
+  "math/rand"
 )
 
 var conn = new(utils.CompoundConnector)
 
-const name  = "aliveddd"
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+func init() {
+  rand.Seed(time.Now().UnixNano())
+}
+
+func RandStringBytes(n int) string {
+  b := make([]byte, n)
+  for i := range b {
+    b[i] = letterBytes[rand.Intn(len(letterBytes))]
+  }
+  return string(b)
+}
+
+var name = RandStringBytes(10)
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
   //
