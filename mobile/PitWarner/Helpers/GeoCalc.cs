@@ -24,6 +24,7 @@ namespace PitWarner
             return grad * Math.PI / 180;
         }
 
+        [Obsolete]
         public static bool InPoly(IList<PitModel> pits, PitModel pt)
         {
             double maxLat = pits.Max(p => p.lat);
@@ -36,6 +37,14 @@ namespace PitWarner
 
             return betweenLat && betweenLon;
         }
+
+//        public static bool InPoly2(IList<PitModel> pits, PitModel pt)
+//        {
+//            double area1, area2, area3, area4;
+//
+//            double line1 = 
+
+//        }
 
 //        public static decimal MakeRectangle(double lat, double lng)
 //        {

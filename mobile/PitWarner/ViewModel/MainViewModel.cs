@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MvvmCross.Plugins.Location;
 using System.Diagnostics;
+using Chance.MvvmCross.Plugins.UserInteraction;
 
 namespace PitWarner.ViewModels
 {
@@ -69,10 +70,13 @@ namespace PitWarner.ViewModels
         {
             get
             { 
-                return _countOfDots; 
+                return _countOfDots;
             }
             set
             { 
+                if (_countOfDots != value)
+                    Mvx.Resolve<IUserInteraction>().Alert(string.Format("Впереди {0} точки"));
+
                 _countOfDots = value; 
                 RaisePropertyChanged(() => CountOfDots);
             }
@@ -82,6 +86,13 @@ namespace PitWarner.ViewModels
 
         private async void OnLocation(MvxGeoLocation currentLocation)
         {
+//            var distance = GeoCalc.GetDistanceBetween2Points(
+//                new PitModel{ lat = currentLocation.Coordinates.Latitude, lng = currentLocation.Coordinates.Longitude},
+//                new PitModel{ lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude}
+//            );
+
+
+
             _lastLocation = currentLocation;
 
             if (_lastLocation != null)
@@ -145,8 +156,15 @@ namespace PitWarner.ViewModels
                 if (distanceToPit < DISTANCE_LIMIT)
                     nearPoints.Add(pit);
 
-                CountOfDots = nearPoints.Count;
+//                CountOfDots = nearPoints.Count;
+
+                PostProcess(pits);
             }
+        }
+
+        void PostProcess(IList<PitModel> pits)
+        {
+            
         }
     }
 }
