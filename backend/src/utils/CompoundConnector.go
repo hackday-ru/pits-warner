@@ -47,12 +47,15 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
   session, _ := writer.CassConnector.CreateSession()
   defer session.Close()
 
-  session.Query(
+  if err := session.Query(
     "INSERT INTO geodata" +
-    "(id, time, geoX, geoY, geoZ, acX, acY, acZ)" +
-    "values (?, ?, ?, ?, ?, ?, ?, ?)",
+    "(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
+    "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
     rec.Uid.String(),
     rec.Timestamp,
     rec.Longitude, rec.Latitude, rec.Altitude,
-    rec.AcX, rec.AcY, rec.AcZ).Exec()
+    rec.AcX, rec.AcY, rec.AcZ,
+    rec.Accuracy, rec.Bearing, rec.Speed).Exec(); err != nil {
+    log.Fatal(err)
+  }
 }
