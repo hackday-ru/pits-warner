@@ -127,9 +127,6 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
       return
     }
 
-
-
-
     defer file.Close()
     
     items := model.FromCSVFile(bufio.NewReader(file))

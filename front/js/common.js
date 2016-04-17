@@ -2,6 +2,32 @@
  * Created by desiresdesigner on 4/16/16.
  */
 
+  
+
+var App = {}
+
+//App.host = 'http://52.58.116.75:8080'
+App.host = 'http://localhost:8080'
+
+
+
+App.getPitsUrl = function() {
+  
+  var point = {
+    lat: 10.1232132,
+    lng: 23.1232,
+  }
+  
+  var radius = 13219123;
+  
+  App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
+    point.lat, point.lng, radius
+  );
+  
+  return App.host + App.postfix;
+  
+}
+
 $( document ).ready(function() {
 
     var map = L.map('map');
@@ -14,6 +40,8 @@ $( document ).ready(function() {
 
     var marker_icon = L.divIcon({className: 'icon'});
     
+    
+
     function moveend() {
         var bounds = map.getBounds();
         for (var i = 0, n = markers.length; i < n; ++i) {
@@ -24,8 +52,7 @@ $( document ).ready(function() {
         $.ajax({
             type: 'GET',
             dataType: "json",
-            url: 'http://52.58.116.75:8080/pits?lat0=' + bounds._northEast.lat + '&lon0=' + bounds._northEast.lng +
-            '&lat1=' + bounds._southWest.lat + '&lon1=' + bounds._southWest.lng,
+            url: App.getPitsUrl(),
             success: function(data){
                 console.log("success");
                 $.each(data, function (key, val) {
@@ -73,3 +100,8 @@ $( document ).ready(function() {
     // searchCtrl.addTo(map);
 
 });
+
+String.prototype.format = function() {
+  var args = Array.prototype.slice.call(arguments);
+  return sprintf.apply(sprintf, [this].concat(args));
+};
