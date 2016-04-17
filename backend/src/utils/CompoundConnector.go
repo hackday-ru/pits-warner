@@ -9,6 +9,8 @@ import (
   "github.com/satori/go.uuid"
   //"fmt"
   //"fmt"
+  //"fmt"
+  "fmt"
 )
 
 var  conn CompoundConnector;
@@ -43,15 +45,19 @@ func toString(v float64) string  {
 
 func (writer CompoundConnector) ReadByLocation(c model.Coord, radius float64) model.FindResult {
   var res = []model.Coord{}
-  locs, _ := writer.RedisConnector.GeoRadius(MARKERS, c.Lat, c.Lng, &redis.GeoRadiusQuery{
+
+  locs := writer.RedisConnector.GeoRadius(MARKERS, c.Lat, c.Lng, &redis.GeoRadiusQuery{
     Radius: radius,
     // Can be m, km, ft, or mi. Default is km.
-    Unit: "m" }).Result()
+    Unit: "m" }).Val()
   for _, e := range(locs) {
-    res = append(res[:], model.Coord{
+    res = append(res, model.Coord{
       Lat: e.Latitude,
       Lng: e.Longitude})
   }
+
+  fmt.Println(locs)
+  fmt.Println(res)
 
   return model.FindResult{res}
 }
@@ -72,8 +78,11 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
 
   //fmt.Println(uid.String())
 
-  err1 :=  writer.RedisConnector.GeoAdd(MARKERS, &redis.GeoLocation{
-    Longitude:rec.Longitude, Latitude: rec.Latitude, Name: uid.String()}).Err()
+  test := &redis.GeoLocation{Longitude:rec.Longitude, Latitude: rec.Latitude, Name: uid.String()}
+
+  fmt.Println(test)
+  fmt.Println(rec.Longitude, rec.Latitude)
+  _, err1 :=  writer.RedisConnector.GeoAdd(MARKERS, test ).Result()
   if err1 != nil {
     log.Fatal(err1)
   }

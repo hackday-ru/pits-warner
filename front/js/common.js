@@ -27,7 +27,7 @@ App.addMarker = function(p) {
 
 App.getPitsUrl = function() {
   
-  //return 'testData/pits.json'
+  return 'testData/pits.json'
   
   var point = App.map.getCenter();
   var radius = 1000;

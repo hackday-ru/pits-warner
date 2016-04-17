@@ -12,7 +12,8 @@ import (
   "strconv"
   //"fmt"
   "math"
-  
+
+  //"fmt"
 )
 
 func PitsHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,14 +32,15 @@ func PitsHandler(w http.ResponseWriter, r *http.Request) {
     rf,
   )
 
-  js, err := json.Marshal(res)
+
+  js,err := json.Marshal(res)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
     return
   }
   w.Header().Set("Content-Type", "application/json")
   w.Write(js)
-}
+  }
 
 
 func toRad(a float64) float64 {
