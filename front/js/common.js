@@ -7,11 +7,11 @@ var App = {}
 //App.host = 'http://52.58.116.75:8080'
 App.host = 'http://localhost:8080'
 
-App.updateMarkers = function(data) {
+App.updateMarkers = function(items) {
   for (var i = 0, n = App.markers.length; i < n; ++i) {
     App.map.removeLayer(markers[i]);
   }
-  $.each(data, function (key, val) {
+  $.each(item, function (key, val) {
     App.addMarker(val)
   });
 };
@@ -28,7 +28,7 @@ App.getPitsUrl = function() {
   App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
     point.lat, point.lng, radius
   );
-  return App.host + App.postfix;  
+  return App.host + App.postfix;
 }
 
 $(function() {
@@ -50,7 +50,7 @@ $(function() {
           dataType: "json",
           url: App.getPitsUrl(),
           success: function(data){
-            App.updateMarkers(data);
+            App.updateMarkers(data.Items);
           },
           error: function (err) {
             console.log(err);
