@@ -153,10 +153,12 @@ namespace PitWarner.ViewModels
                 Lon = _lastLocation.Coordinates.Longitude;
             }
 
-            var newPits = _processor.GetPitsAhead();
+            var newPits = _processor.GetPitsAhead(_lastLocation);
             if (newPits.Length > 0)
             {
                 // TODO: make a notification
+
+                Mvx.Resolve<IUserInteraction>().Alert("Впереди яма!");
             }
 
         }

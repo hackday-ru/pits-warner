@@ -5,7 +5,6 @@ namespace PitWarner
 {
     public interface IDataBaseService
     {
-        void InitDB();
         void SaveData(IList<PitModel> pits);
         List<PitModel> ReadData();
     }

@@ -21,7 +21,7 @@ namespace PitWarner
                 .RegisterAsLazySingleton();
 
             Debug.WriteLine(Mvx.Resolve<IMvxFileStore>().NativePath(""));
-            Mvx.Resolve<IDataBaseService>().InitDB();
+
 
             RegisterAppStart<ViewModels.MainViewModel>();
         }

@@ -10,7 +10,7 @@ namespace PitWarner
 {
     public class DataBaseService : IDataBaseService
     {
-        SQLiteConnection _connection;
+//        SQLiteConnection _connection;
         IMvxFileStore _fileStore;
         IMvxSqliteConnectionFactory _sqliteConnectionFactory;
 
@@ -19,15 +19,15 @@ namespace PitWarner
             _sqliteConnectionFactory = sqliteConnectionFactory;
             _fileStore = fileStore;
 
-            _connection = _sqliteConnectionFactory.GetConnection(_fileStore.NativePath(Variables.DataBaseName));
+//            _connection = _sqliteConnectionFactory.GetConnection(_fileStore.NativePath(Variables.DataBaseName));
         }
 
-        public void InitDB()
-        {
-            //_fileStore.DeleteFile(Variables.DataBaseName);
-            //_fileStore.WriteFile (Variables.DataBaseName, string.Empty);
-            //_connection.CreateTable<PitModel> ();
-        }
+//        public void InitDB()
+//        {
+//            //_fileStore.DeleteFile(Variables.DataBaseName);
+//            //_fileStore.WriteFile (Variables.DataBaseName, string.Empty);
+//            //_connection.CreateTable<PitModel> ();
+//        }
 
         #region IDataBaseService implementation
 

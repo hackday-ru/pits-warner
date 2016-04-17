@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MvvmCross.Plugins.Location;
 
 namespace PitWarner
 {
@@ -15,8 +16,45 @@ namespace PitWarner
             _points = allpoints.ToArray();
         }
 
-        public PitModel[] GetPitsAhead() {
-            return new PitModel[0];
+        public PitModel[] GetPitsAhead(MvxGeoLocation p)
+        {
+            var pitModel = new PitModel{ 
+                lat = p.Coordinates.Latitude,
+                lng = p.Coordinates.Longitude
+            };
+
+            var len = 10f;
+
+            var pointA = new PitModel{ 
+                X = pitModel.X - (len / 2),
+                Y = pitModel.Y - (len / 2)
+            };
+
+            var pointB = new PitModel{ 
+                X = pitModel.X + (len / 2),
+                Y = pitModel.Y - (len / 2)
+            };
+
+            var pointC = new PitModel{ 
+                X = pitModel.X + (len / 2),
+                Y = pitModel.Y + (len / 2)
+            };
+
+            var pointD = new PitModel{ 
+                X = pitModel.X - (len / 2),
+                Y = pitModel.Y + (len / 2)
+            };
+
+            var poligon = new Poligon();
+            poligon.points.Add(pointA);
+            poligon.points.Add(pointB);
+            poligon.points.Add(pointC);
+            poligon.points.Add(pointD);
+
+            var pitsAhead = getPointsInPoly(poligon);
+
+            return pitsAhead;
+
         }
 
         public static Poligon GetPoly()
@@ -88,15 +126,18 @@ namespace PitWarner
         }
 
         #endregion
+
+        public struct Rect {
+            public PitModel p;
+            public PitModel q;
+        }
+
+        public class Poligon {
+            public List<PitModel> points = new List<PitModel>();
+        }
+
     }
 
-    public struct Rect {
-        public PitModel p;
-        public PitModel q;
-    }
 
-    public class Poligon {
-        public List<PitModel> points;
-    }
 }
 
