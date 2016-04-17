@@ -61,7 +61,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
 
   uid := uuid.NewV4()
 
-  err := writer.RedisConnector.Set(uid, acc, 0).Err()
+  err := writer.RedisConnector.Set(uid.String(), acc, 0).Err()
   if err != nil {
     log.Fatal(err)
   }
@@ -76,7 +76,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
     "INSERT INTO geodata" +
     "(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
     "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
-    uid,
+    uid.String(),
     rec.Timestamp,
     rec.Longitude, rec.Latitude, rec.Altitude,
     rec.AcX, rec.AcY, rec.AcZ,
