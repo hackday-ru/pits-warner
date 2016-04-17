@@ -117,11 +117,7 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
       filtered = append(filtered, e.Z > 40)
     }
 
-
-
     for i, _ := range diff {
-
-    for i, e := range diff {
       if filtered[i] {
           fmt.Println(diff[i])
           c := utils.GetConn()
