@@ -339,7 +339,7 @@ func updateNodeAlive(i int){
 
 func main() {
 	setAliveField()
-	go becomeDispatcher()
+	becomeDispatcher()
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
 
 	//conn.RedisConnector.Set("alive", "1", 0)
