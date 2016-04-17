@@ -3,8 +3,6 @@ package controllers
 import (
   "net/http"
   "fmt"
-  //"os"
-  //"io"
   "model"
   "bufio"
   "utils"
@@ -15,7 +13,6 @@ import (
 
 type Wrapper struct {
   ir model.InputRecord
-
   Z float64
 }
 
@@ -99,9 +96,7 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
     for _, e := range(diff) {
       filtered = append(filtered, e.Z > 40)
     }
-
-
-
+    
     for i, e := range diff {
       if filtered[i] {
           utils.GetConn().Write(e.ir)
@@ -113,5 +108,24 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
     `, len(items))
     
   }
+
+}
+
+
+func MeasureHandlerText(w http.ResponseWriter, r *http.Request) {
+  if r.Method != "POST" {
+    fmt.Fprintf(w, `
+      <h1>Upload data</h1>
+      I can understand only POST
+    `)
+    return
+    
+  }
+  //buf := new(bytes.Buffer)
+  //buf.ReadFrom(r.Body)
+
+  model.FromCSVFile(r.Body)
   
+  //s := buf.String()
+  //fmt.Println(s)
 }

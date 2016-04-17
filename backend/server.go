@@ -299,6 +299,7 @@ func becomeDispatcher() {
 	http.HandleFunc("/addMock", addMockHandler)
 	http.HandleFunc("/getMock", getMockHandler)
 	http.HandleFunc("/addCMock", addCHandler)
+	http.HandleFunc("/measurestext", controllers.MeasureHandlerText)
 	http.HandleFunc("/measures", controllers.MeasureHandler)
 	http.HandleFunc("/pits", controllers.PitsHandler)
 	//http.HandleFunc("/getCMock", getCHandler)
@@ -331,9 +332,7 @@ func updateNodeAlive(i int){
 		//fmt.Printf("updating keep alive %d \n", i)
 		time.Sleep(20 * time.Millisecond)
 		updateNodeAlive(i)
-
 	}
-
 }
 
 
