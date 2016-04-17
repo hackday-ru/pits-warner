@@ -25,10 +25,10 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "POST" {
 
     r.ParseMultipartForm(32 << 20)
+    fmt.Println(r.MultipartForm.File["uploadfile"])
     file, _, err := r.FormFile("uploadfile")
     if err != nil {
       fmt.Println(err)
-      fmt.Println("here")
       return
     }
 
