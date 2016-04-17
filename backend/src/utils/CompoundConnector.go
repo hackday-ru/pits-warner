@@ -7,6 +7,7 @@ import (
   "log"
   "strconv"
   "github.com/satori/go.uuid"
+  "fmt"
 )
 
 var  conn CompoundConnector;
@@ -66,9 +67,11 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
     log.Fatal(err)
   }
 
+  fmt.Println(uid.String())
+
   err1 :=  writer.RedisConnector.GeoAdd(MARKERS, &redis.GeoLocation{
-    Longitude:rec.Longitude, Latitude: rec.Latitude, Name: uid.String()})
-  if err1 != nil {
+    Longitude:rec.Longitude, Latitude: rec.Latitude, Name: uid.String()}).Err()
+  if err1 == nil {
     log.Fatal(err1)
   }
 
