@@ -1,5 +1,3 @@
-  http.HandleFunc("/measures", controllers.MeasureHandler)
-  http.HandleFunc("/pits", controllers.PitsHandler)
 package main
 
 import (
@@ -319,7 +317,7 @@ func becomeHandler(){
 }
 
 func updateNodeAlive(i int){
-	err := conn.RedisConnector.Get(ALIVE_FIELD).Err()
+	err := conn.RedisConnector.Get(name).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
@@ -346,7 +344,7 @@ func main() {
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
-	err := conn.RedisConnector.Get(ALIVE_FIELD).Err()
+	err := conn.RedisConnector.Get(name).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
