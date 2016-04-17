@@ -1,0 +1,8 @@
+.icon {
+    width: 16px;
+    height: 16px;
+    border: 1px solid black;
+    border-radius: 8px;
+    background: radial-gradient(circle,#999,#000);
+    opacity: 0.5;
+}
