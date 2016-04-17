@@ -45,7 +45,7 @@ func setAliveField() {
 				ip = v.IP
 			}
 			fmt.Println("%s", ip.String())
-			name = "ri4tghuwtnieuoighwtuigh"
+			name = "ri4tghuwwqrgqerqwfqwrfqrefwqrgetgwrwtegtnieuoighwtuigh"
 			// process IP address
 		}
 	}
