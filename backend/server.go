@@ -1,26 +1,27 @@
+  http.HandleFunc("/measures", controllers.MeasureHandler)
+  http.HandleFunc("/pits", controllers.PitsHandler)
 package main
 
 import (
 	"fmt"
 	"net/http"
-	//"encoding/json"
-	//"model"
-	//"github.com/satori/go.uuid"
+  //"encoding/json"
+  //"model"
+  //"github.com/satori/go.uuid"
 
-	"utils"
-	"model"
-	//"github.com/gocql/gocql"
-	"github.com/satori/go.uuid"
-	"strconv"
-	//"encoding/json"
-	"log"
-	"time"
-	"controllers"
+  "utils"
+  "model"
+  //"github.com/gocql/gocql"
+  "github.com/satori/go.uuid"
+  "strconv"
+  //"encoding/json"
+  "log"
+  "time"
+  "controllers"
 	"net"
 )
 
 const YOUR_INTERFACE_NAME = "en0"
-const ALIVE_FIELD = "alive"
 var conn = new(utils.CompoundConnector)
 
 var name string
@@ -46,7 +47,7 @@ func setAliveField() {
 			case *net.IPAddr:
 				ip = v.IP
 			}
-			if i.Name == YOUR_INTERFACE_NAME && ip.To4() != nil {
+			if i.Name == YOUR_INTERFACE_NAME && ip.To4() != nil{
 				name = ip.String()
 				fmt.Println("%s", ip.To4().String())
 
@@ -58,6 +59,20 @@ func setAliveField() {
 }
 
 func pointsHandler(w http.ResponseWriter, r *http.Request) {
+  //
+  //h1 := model.GeoData { Lat:10, Lng:20 }
+  //h2 := model.GeoData{ Lat:11.21312, Lng:20.1232 }
+  //res := model.FindResult{ []model.GeoData{ h1, h2} }
+  //js, err := json.Marshal(res)
+  //if err != nil {
+  //  http.Error(w, err.Error(), http.StatusInternalServerError)
+  //  return
+  //}
+  //w.Header().Set("Content-Type", "application/json")
+  //w.Write(js)
+  fmt.Fprintf(w, "yo")
+}
+func pointsHandler_public(w http.ResponseWriter, r *http.Request) {
 	//
 	//h1 := model.GeoData { Lat:10, Lng:20 }
 	//h2 := model.GeoData{ Lat:11.21312, Lng:20.1232 }
@@ -73,12 +88,39 @@ func pointsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+  var title = "Hello to REST serverr"
+  var body = "use get / post to /points"
+  fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", title, body)
+}
+
+func indexHandler_public(w http.ResponseWriter, r *http.Request) {
 	var title = "Hello to REST serverr"
 	var body = "use get / post to /points"
 	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", title, body)
 }
 
 func addMockHandler(w http.ResponseWriter, r *http.Request) {
+  rec := model.InputRecord{
+    Uid: uuid.NewV4(),
+    Timestamp: 0,
+    Longitude: 0.0,
+    Latitude: 0.0,
+    Altitude: 0.0,
+    AcX: 0.0,
+    AcY: 0.0,
+    AcZ: 0.0,
+    Accuracy: 0.0,
+    Bearing: 0.0,
+    Speed: 0.0,
+  }
+
+
+
+  //conn.RedisConnector.Set("sample", "val", 0)
+  conn.Write(rec)
+}
+
+func addMockHandler_public(w http.ResponseWriter, r *http.Request) {
 	rec := model.InputRecord{
 		Uid: uuid.NewV4(),
 		Timestamp: 0,
@@ -93,25 +135,66 @@ func addMockHandler(w http.ResponseWriter, r *http.Request) {
 		Speed: 0.0,
 	}
 
+
+
 	//conn.RedisConnector.Set("sample", "val", 0)
 	conn.Write(rec)
 }
+
 func getMockHandler(w http.ResponseWriter, r *http.Request) {
-	val, _ := conn.RedisConnector.Get("sample").Result()
-	//rad, _ := conn.RedisConnector.geo
+  val, _ := conn.RedisConnector.Get("sample").Result()
+  //rad, _ := conn.RedisConnector.geo
 
 	fmt.Fprintf(w, "<div>%s</div>", val)
 }
 
+func getMockHandler_public(w http.ResponseWriter, r *http.Request) {
+	val, _ := conn.RedisConnector.Get("sample").Result()
+	//rad, _ := conn.RedisConnector.geo
+
+  fmt.Fprintf(w, "<div>%s</div>", val)
+}
+
 func updateRedisAlive() {
-	conn.RedisConnector.Set(ALIVE_FIELD, "1", 0)
-	conn.RedisConnector.PExpire(ALIVE_FIELD, 500 * 1000000)
+	conn.RedisConnector.Set(name, "1", 0)
+	conn.RedisConnector.PExpire(name, 500 * 1000000)
 	fmt.Printf("updating keep alive\n")
 	time.Sleep(400 * time.Millisecond)
 	updateRedisAlive()
 }
 
 func addCHandler(w http.ResponseWriter, r *http.Request) {
+  rec := model.InputRecord{
+    Uid: uuid.NewV4(),
+    Timestamp: 0.0,
+    Longitude: 0.0,
+    Latitude: 0.0,
+    Altitude: 0.0,
+    AcX: 0.0,
+    AcY: 0.0,
+    AcZ: 0.0,
+    Accuracy: 0.0,
+    Bearing: 0.0,
+    Speed: 0.0,
+  }
+
+  session, _ := conn.CassConnector.CreateSession()
+  defer session.Close()
+
+	if err := session.Query(
+		"INSERT INTO geodata" +
+		"(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
+		"values (?, ?, ?, ?, ?, ?, ?, ?)",
+		rec.Uid.String(),
+		rec.Timestamp,
+		rec.Longitude, rec.Latitude, rec.Altitude,
+		rec.AcX, rec.AcY, rec.AcZ,
+		rec.Accuracy, rec.Bearing, rec.Speed).Exec(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func addCHandler_public(w http.ResponseWriter, r *http.Request) {
 	rec := model.InputRecord{
 		Uid: uuid.NewV4(),
 		Timestamp: 0.0,
@@ -129,45 +212,46 @@ func addCHandler(w http.ResponseWriter, r *http.Request) {
 	session, _ := conn.CassConnector.CreateSession()
 	defer session.Close()
 
-	if err := session.Query(
-		"INSERT INTO geodata" +
-		"(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
-		"values (?, ?, ?, ?, ?, ?, ?, ?)",
-		rec.Uid.String(),
-		rec.Timestamp,
-		rec.Longitude, rec.Latitude, rec.Altitude,
-		rec.AcX, rec.AcY, rec.AcZ,
-		rec.Accuracy, rec.Bearing, rec.Speed).Exec(); err != nil {
-		log.Fatal(err)
-	}
+  if err := session.Query(
+    "INSERT INTO geodata" +
+    "(id, timestamp, longitude, latitude, altitude, acx, acy, acz, accuracy, bearing, speed)" +
+    "values (?, ?, ?, ?, ?, ?, ?, ?)",
+    rec.Uid.String(),
+    rec.Timestamp,
+    rec.Longitude, rec.Latitude, rec.Altitude,
+    rec.AcX, rec.AcY, rec.AcZ,
+    rec.Accuracy, rec.Bearing, rec.Speed).Exec(); err != nil {
+    log.Fatal(err)
+  }
 }
 
 func getCHandler(w http.ResponseWriter, r *http.Request) {
-	session, _ := conn.CassConnector.CreateSession()
-	defer session.Close()
+  session, _ := conn.CassConnector.CreateSession()
+  defer session.Close()
 
-	var geoX float64
-	var geoY float64
+  var geoX float64
+  var geoY float64
 
-	var str string
-	str += "["
+  var str string
+  str += "["
 
-	iter := session.Query(`SELECT geoX, geoY FROM geodata`).Iter()
-	for iter.Scan(&geoX, &geoY) {
-		//fmt.Println("Tweet:", geoX, geoY)
-		str += "{lat: " + toString(geoX) + ",lng: " + toString(geoY) + "},"
-	}
+  iter := session.Query(`SELECT geoX, geoY FROM geodata`).Iter()
+  for iter.Scan(&geoX, &geoY) {
+    //fmt.Println("Tweet:", geoX, geoY)
+    str += "{lat: " + toString(geoX) + ",lng: " + toString(geoY) + "},"
+  }
 
-	sl := str[0: len(str) - 1]
-	sl += "]"
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(sl))
+  sl := str[0: len(str) - 1]
+  sl += "]"
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte(sl))
 }
 
+
 func getJA(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{
+  w.Header().Set("Access-Control-Allow-Origin", "*")
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte(`{
     "0": {
         "lat": 59.89444,
         "lng": 30.26417
@@ -188,13 +272,14 @@ func getJA(w http.ResponseWriter, r *http.Request) {
 }
 
 func toString(v float64) string {
-	return strconv.FormatFloat(float64(v), 'f', 5, 64)
+  return strconv.FormatFloat(float64(v), 'f', 5, 64)
 }
 
+
 func getRaw(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`[{
+  w.Header().Set("Access-Control-Allow-Origin", "*")
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte(`[{
 "lat": 59.89444,
 "lng": 30.26417
 }, {
@@ -209,14 +294,15 @@ func getRaw(w http.ResponseWriter, r *http.Request) {
 }]`))
 }
 
+
 func becomeDispatcher() {
-	http.HandleFunc("/hollows", pointsHandler)
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/addMock", addMockHandler)
-	http.HandleFunc("/getMock", getMockHandler)
-	http.HandleFunc("/addCMock", addCHandler)
-	http.HandleFunc("/measures", controllers.MeasureHandler)
-	http.HandleFunc("/pits", controllers.PitsHandler)
+	http.HandleFunc("/hollows", pointsHandler_public)
+	http.HandleFunc("/", indexHandler_public)
+	http.HandleFunc("/addMock", addMockHandler_public)
+	http.HandleFunc("/getMock", getMockHandler_public)
+	http.HandleFunc("/addCMock", addCHandler_public)
+	http.HandleFunc("/measures", controllers.MeasureHandler_public)
+	http.HandleFunc("/pits", controllers.PitsHandler_public)
 	//http.HandleFunc("/getCMock", getCHandler)
 
 	//http.HandleFunc("/pits", getJA)
@@ -227,28 +313,13 @@ func becomeDispatcher() {
 	}
 }
 
-func becomeHandler() {
+func becomeHandler(){
 	fmt.Printf("Waiting for events\n")
-	http.HandleFunc("/hollows", pointsHandler)
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/addMock", addMockHandler)
-	http.HandleFunc("/getMock", getMockHandler)
-	http.HandleFunc("/addCMock", addCHandler)
-	http.HandleFunc("/measures", controllers.MeasureHandler)
-	http.HandleFunc("/pits", controllers.PitsHandler)
-	//http.HandleFunc("/getCMock", getCHandler)
-
-	//http.HandleFunc("/pits", getJA)
-	http.HandleFunc("/raw", getRaw)
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		panic(err)
-	}
 	time.Sleep(1 * time.Second)
 }
 
-func updateNodeAlive(i int) {
-	err := conn.RedisConnector.Get(name).Err()
+func updateNodeAlive(i int){
+	err := conn.RedisConnector.Get(ALIVE_FIELD).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
@@ -257,6 +328,7 @@ func updateNodeAlive(i int) {
 	} else {
 		fmt.Printf("Waiting connections\n")
 		i += 1
+		conn.RedisConnector.LPush("nodes", strconv.Itoa(i))
 		//conn.RedisConnector.Expire("nodes", 2 * time.Second)
 		fmt.Printf("updating keep alive %d \n", i)
 		time.Sleep(20 * time.Millisecond)
@@ -266,6 +338,7 @@ func updateNodeAlive(i int) {
 
 }
 
+
 func main() {
 	setAliveField()
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
@@ -273,7 +346,7 @@ func main() {
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
-	err := conn.RedisConnector.Get(name).Err()
+	err := conn.RedisConnector.Get(ALIVE_FIELD).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
@@ -281,7 +354,6 @@ func main() {
 		//panic(err)
 	} else {
 		fmt.Printf("Running in handler mode")
-		conn.RedisConnector.LPush("nodes", name)
 		go becomeHandler()
 		updateNodeAlive(0)
 
