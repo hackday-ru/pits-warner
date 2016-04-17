@@ -19,7 +19,7 @@ import (
 	"net"
 )
 
-const YOUR_INTERFACE_NAME = "en0"
+const YOUR_INTERFACE_NAME = "wlan0"
 var conn = new(utils.CompoundConnector)
 
 var name string
@@ -47,9 +47,9 @@ func setAliveField() {
 			}
 			if i.Name == YOUR_INTERFACE_NAME && ip.To4() != nil{
 				name = ip.String()
-				fmt.Println("%s", ip.To4().String())
-
+        fmt.Println("%s", ip.To4().String())
 			}
+
 
 			// process IP address
 		}
@@ -328,7 +328,7 @@ func updateNodeAlive(i int){
 		i += 1
 		conn.RedisConnector.LPush("nodes", strconv.Itoa(i))
 		//conn.RedisConnector.Expire("nodes", 2 * time.Second)
-		fmt.Printf("updating keep alive %d \n", i)
+		//fmt.Printf("updating keep alive %d \n", i)
 		time.Sleep(20 * time.Millisecond)
 		updateNodeAlive(i)
 
