@@ -294,13 +294,13 @@ func getRaw(w http.ResponseWriter, r *http.Request) {
 
 
 func becomeDispatcher() {
-	http.HandleFunc("/hollows", pointsHandler_public)
-	http.HandleFunc("/", indexHandler_public)
-	http.HandleFunc("/addMock", addMockHandler_public)
-	http.HandleFunc("/getMock", getMockHandler_public)
-	http.HandleFunc("/addCMock", addCHandler_public)
-	http.HandleFunc("/measures", controllers.MeasureHandler_public)
-	http.HandleFunc("/pits", controllers.PitsHandler_public)
+	http.HandleFunc("/hollows", pointsHandler)
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/addMock", addMockHandler)
+	http.HandleFunc("/getMock", getMockHandler)
+	http.HandleFunc("/addCMock", addCHandler)
+	http.HandleFunc("/measures", controllers.MeasureHandler)
+	http.HandleFunc("/pits", controllers.PitsHandler)
 	//http.HandleFunc("/getCMock", getCHandler)
 
 	//http.HandleFunc("/pits", getJA)
