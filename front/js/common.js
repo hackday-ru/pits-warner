@@ -9,23 +9,28 @@ var App = {}
 //App.host = 'http://52.58.116.75:8080'
 App.host = 'http://localhost:8080'
 
+App.updateMarkers = function(data) {
+  for (var i = 0, n = markers.length; i < n; ++i) {
+    map.removeLayer(markers[i]);
+  }
+  $.each(data, function (key, val) {
+    addMarker(val)
+  })
+};
 
+App.addMarker = function(p) {
+  markers.push(
+    L.marker([+p.Lat, +p.Lnt], {icon: App.markerIcon}).addTo(map)
+  );
+}
 
 App.getPitsUrl = function() {
-  
-  var point = {
-    lat: 10.1232132,
-    lng: 23.1232,
-  }
-  
-  var radius = 13219123;
-  
+  var point = L.getCenter();
+  var radius = 10000;
   App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
     point.lat, point.lng, radius
   );
-  
-  return App.host + App.postfix;
-  
+  return App.host + App.postfix;  
 }
 
 $( document ).ready(function() {
@@ -38,15 +43,11 @@ $( document ).ready(function() {
         iconSize: [16, 16]
     });*/
 
-    var marker_icon = L.divIcon({className: 'icon'});
+    App.markerIcon = L.divIcon({className: 'icon'});
     
-    
-
     function moveend() {
         var bounds = map.getBounds();
-        for (var i = 0, n = markers.length; i < n; ++i) {
-            map.removeLayer(markers[i]);
-        }
+        
         markers = [];
 
         $.ajax({
@@ -54,11 +55,7 @@ $( document ).ready(function() {
             dataType: "json",
             url: App.getPitsUrl(),
             success: function(data){
-                console.log("success");
-                $.each(data, function (key, val) {
-                    //console.log(val.lat + "; " + val.lng);
-                    markers.push(L.marker([Number(val.lat), Number(val.lng)], {icon: marker_icon}).addTo(map));
-                })
+              App.updateMarkers(data);
             },
             error: function (err) {
                 console.log("err");
