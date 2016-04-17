@@ -1,8 +1,6 @@
 /**
- * Created by desiresdesigner on 4/16/16.
+ * Yamki, Epam hackday 2016
  */
-
-  
 
 var App = {}
 
@@ -25,7 +23,7 @@ App.addMarker = function(p) {
 }
 
 App.getPitsUrl = function() {
-  var point = L.getCenter();
+  var point = App.map.getCenter();
   var radius = 10000;
   App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
     point.lat, point.lng, radius
@@ -33,9 +31,9 @@ App.getPitsUrl = function() {
   return App.host + App.postfix;  
 }
 
-$( document ).ready(function() {
+$(function() {
 
-    var map = L.map('map');
+    var map = App.map = L.map('map');
     var markers = [];
 
     /*var marker_icon = L.icon({
@@ -58,8 +56,7 @@ $( document ).ready(function() {
               App.updateMarkers(data);
             },
             error: function (err) {
-                console.log("err");
-                console.log(err);
+              console.log(err);
             }
         });
     }
