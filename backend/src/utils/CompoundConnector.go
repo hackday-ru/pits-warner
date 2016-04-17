@@ -71,7 +71,7 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
 
   err1 :=  writer.RedisConnector.GeoAdd(MARKERS, &redis.GeoLocation{
     Longitude:rec.Longitude, Latitude: rec.Latitude, Name: uid.String()}).Err()
-  if err1 == nil {
+  if err1 != nil {
     log.Fatal(err1)
   }
 
