@@ -45,7 +45,7 @@ func setAliveField() {
 				ip = v.IP
 			}
 			fmt.Println("%s", ip.String())
-			name = ip.String()
+			name = "ri4tghuwtnieuoighwtuigh"
 			// process IP address
 		}
 	}
@@ -216,7 +216,7 @@ func becomeDispatcher() {
   http.HandleFunc("/pits", controllers.PitsHandler)
 	//http.HandleFunc("/getCMock", getCHandler)
 
-	http.HandleFunc("/pits", getJA)
+	//http.HandleFunc("/pits", getJA)
 	http.HandleFunc("/raw", getRaw)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

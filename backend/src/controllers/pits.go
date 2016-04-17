@@ -2,13 +2,14 @@ package controllers
 
 import (
   "net/http"
-  "fmt"
+  //"fmt"
   //"utils"
   //"utils"
   //"utils"
   "utils"
   "model"
   "encoding/json"
+  "strconv"
 )
 
 func PitsHandler(w http.ResponseWriter, r *http.Request) {
@@ -16,9 +17,13 @@ func PitsHandler(w http.ResponseWriter, r *http.Request) {
   lng := r.URL.Query().Get("lng")
   rad := r.URL.Query().Get("radius")
 
+  lt, _ := strconv.ParseFloat(lng, 64)
+  ln, _ := strconv.ParseFloat(lat, 64)
+  rf, _ := strconv.ParseFloat(rad, 64)
+
   res := utils.GetConn().ReadByLocation(model.Coord{
-    Lng: lng,
-    Lat: lat}, rad)
+    Lng: lt,
+    Lat: ln},rf )
 
   js, err := json.Marshal(res)
   if err != nil {
