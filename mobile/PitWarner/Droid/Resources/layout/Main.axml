@@ -22,4 +22,20 @@
         local:MvxBind="Text CountOfDots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+    <TextView
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+    <TextView
+        local:MvxBind="Text X"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        local:MvxBind="Text Y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        local:MvxBind="Text Z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

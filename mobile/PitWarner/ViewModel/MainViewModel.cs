@@ -9,6 +9,7 @@ using System.Linq;
 using MvvmCross.Plugins.Location;
 using System.Diagnostics;
 using Chance.MvvmCross.Plugins.UserInteraction;
+using MvvmCross.Plugins.Accelerometer;
 
 namespace PitWarner.ViewModels
 {
@@ -18,23 +19,38 @@ namespace PitWarner.ViewModels
 
         readonly IApiService _apiService;
         readonly IDataBaseService _dbService;
+        readonly IMvxAccelerometer _accelerometer;
         private readonly IMvxLocationWatcher _watcher;
+        private PitsProcessor _processor;
+
+        MvxAccelerometerReading _accValue;
 
         List<PitModel> _pits;
         MvxGeoLocation _lastLocation;
 
-        public MainViewModel(IApiService apiService, IDataBaseService dbService, IMvxLocationWatcher watcher)
+        public MainViewModel(IApiService apiService, IDataBaseService dbService, IMvxLocationWatcher watcher, IMvxAccelerometer accelerometer)
         {
+            _accelerometer = accelerometer;
             _apiService = apiService;
             _dbService = dbService;
             _watcher = watcher;
         }
 
-        public override void Start()
+        public async override void Start()
         {
             base.Start();
 
+            updatePits();
             _watcher.Start(new MvxLocationOptions(), OnLocation, OnError);
+
+            _accelerometer.Start();
+            _accelerometer.ReadingAvailable += (sender, e) => {
+                _accValue = e.Value;
+                X = _accValue.X;
+                Y = _accValue.Y;
+                Z = _accValue.Z;
+            };
+
         }
 
         private double _lat;
@@ -45,7 +61,7 @@ namespace PitWarner.ViewModels
                 return _lat; 
             }
             set
-            { 
+            {
                 _lat = value; 
                 RaisePropertyChanged(() => Lat);
             }
@@ -65,6 +81,48 @@ namespace PitWarner.ViewModels
             }
         }
 
+        private double _x;
+        public double X
+        {
+            get
+            { 
+                return _x; 
+            }
+            set
+            { 
+                _x = value; 
+                RaisePropertyChanged(() => X);
+            }
+        }
+
+        private double _y;
+        public double Y
+        {
+            get
+            { 
+                return _y; 
+            }
+            set
+            { 
+                _y = value; 
+                RaisePropertyChanged(() => Y);
+            }
+        }
+
+        private double _z;
+        public double Z
+        {
+            get
+            { 
+                return _z; 
+            }
+            set
+            { 
+                _z = value; 
+                RaisePropertyChanged(() => Z);
+            }
+        }
+
         private int _countOfDots;
         public int CountOfDots
         {
@@ -75,7 +133,7 @@ namespace PitWarner.ViewModels
             set
             { 
                 if (_countOfDots != value)
-                    Mvx.Resolve<IUserInteraction>().Alert(string.Format("Впереди {0} точки"));
+                    Mvx.Resolve<IUserInteraction>().Alert(string.Format("Впереди {0} ямки"));
 
                 _countOfDots = value; 
                 RaisePropertyChanged(() => CountOfDots);
@@ -86,13 +144,7 @@ namespace PitWarner.ViewModels
 
         private async void OnLocation(MvxGeoLocation currentLocation)
         {
-//            var distance = GeoCalc.GetDistanceBetween2Points(
-//                new PitModel{ lat = currentLocation.Coordinates.Latitude, lng = currentLocation.Coordinates.Longitude},
-//                new PitModel{ lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude}
-//            );
-
-
-
+            
             _lastLocation = currentLocation;
 
             if (_lastLocation != null)
@@ -101,18 +153,24 @@ namespace PitWarner.ViewModels
                 Lon = _lastLocation.Coordinates.Longitude;
             }
 
-//            var pits = await _apiService.GetPits(59.8950, 30.3168, Variables.Radius, null);
-
-
-            _pits = _dbService.ReadData();
-
-            if (_pits == null || _pits.Count == 0)
+            var newPits = _processor.GetPitsAhead();
+            if (newPits.Length > 0)
             {
-                _pits = await _apiService.GetPits(_lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, Variables.Radius, null);
-                _dbService.SaveData (_pits);
+                // TODO: make a notification
             }
 
-            Process(_pits);
+        }
+
+        private async void updatePits() {
+            _pits = _dbService.ReadData();
+            if (_pits == null || _pits.Count == 0)
+            {
+                _pits = await _apiService.GetPits(
+                    _lastLocation.Coordinates.Latitude, _lastLocation.Coordinates.Longitude, Variables.Radius, null
+                );
+                _dbService.SaveData (_pits);
+            }
+            _processor = new PitsProcessor(_pits);
         }
 
         private void OnError(MvxLocationError error)
@@ -136,31 +194,6 @@ namespace PitWarner.ViewModels
         }
 
 
-        void Process(List<PitModel> pits)
-        {
-            if (_lastLocation == null)
-                return;
-
-            var nearPoints = new List<PitModel>();
-
-            foreach (var pit in pits)
-            {
-                var distanceToPit = GeoCalc.GetDistanceBetween2Points(
-                    pit,
-                    new PitModel { lat = _lastLocation.Coordinates.Latitude, lng = _lastLocation.Coordinates.Longitude, at = _lastLocation.Coordinates.Altitude ?? 0 }
-//                    new PitModel { lat = 59.8950, lng = 30.3168, at = 0 }
-                );
-
-                Debug.WriteLine(distanceToPit);
-
-                if (distanceToPit < DISTANCE_LIMIT)
-                    nearPoints.Add(pit);
-
-//                CountOfDots = nearPoints.Count;
-
-                PostProcess(pits);
-            }
-        }
 
         void PostProcess(IList<PitModel> pits)
         {

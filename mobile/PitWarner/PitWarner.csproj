@@ -42,11 +42,11 @@
     <Compile Include="Model\BaseModel.cs" />
     <Compile Include="Model\PitModel.cs" />
     <Compile Include="Services\Implamentation\ApiService.cs" />
-    <Compile Include="Helpers\GeoCalc.cs" />
     <Compile Include="Services\Interfaces\IGeoService.cs" />
     <Compile Include="Services\Implamentation\GeoService.cs" />
     <Compile Include="Services\Interfaces\IDataBaseService.cs" />
     <Compile Include="Services\Implamentation\DataBaseService.cs" />
+    <Compile Include="Helpers\PitsProcessor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
