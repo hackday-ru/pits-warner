@@ -33,6 +33,75 @@ func (ws Wrappers) Less(i, j int) bool {
   return ws[i].Z < ws[j].Z
 }
 
+func SaveMe(items []model.InputRecord) {
+
+  var z_val Wrappers
+
+  // 1) z-val
+  for i, e := range items {
+    //w := I()
+    //w.Ir = items[i]
+    //w.Z =  math.Sqrt(math.Pow(e.AcX,2) + math.Pow(e.AcY,2) + math.Pow(e.AcZ,2))
+
+    z_val = append(z_val, Wrapper{
+      Ir:items[i],
+      Z: math.Sqrt(math.Pow(e.AcX,2) + math.Pow(e.AcY,2) + math.Pow(e.AcZ,2)) })
+    //fmt.Println(z_val[i])
+  }
+
+  //fmt.Println("GHFRIOGHJERWN")
+
+
+  // 2) .99 quantile
+  sort.Sort(z_val)
+
+  topI := len(z_val) * 99 / 100
+  //fmt.Println(topI)
+  lol := z_val[topI:]
+  topZSlice := lol
+
+  var diff Wrappers
+  // 3) diff
+  for i := 0; i < len(topZSlice) - 1; i++ {
+    diff = append(diff, Wrapper{
+      Ir: topZSlice[i].Ir,
+      Z: topZSlice[i + 1].Z - topZSlice[i].Z})
+
+    //diff = append(diff, topZSlice[i])
+    //diff[i].ir = topZSlice[i]
+    //diff[i].Z = topZSlice[i + 1].Z - topZSlice[i].Z
+  }
+  diff = append(diff, Wrapper{
+    Ir: topZSlice[len(topZSlice) - 1].Ir,
+    Z: topZSlice[len(topZSlice) - 1].Z})
+  // 4) pow2
+
+  //fmt.Println(diff)
+
+  for i, e := range diff {
+    diff[i].Z = math.Pow(e.Z,2)
+  }
+
+  var filtered []bool
+  // 5) filter < 40
+
+  for _, e := range(diff) {
+    filtered = append(filtered, e.Z > 40)
+  }
+
+  for i, _ := range diff {
+    if filtered[i] {
+      fmt.Println(diff[i])
+      c := utils.GetConn()
+
+      //    fmt.Println("WTF")
+      //fmt.Println("WTF1")
+      c.Write(diff[i].Ir)
+      //fmt.Println("WTF2")
+    }
+  }
+
+}
 
 func MeasureHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "GET" {
@@ -59,75 +128,13 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
     }
 
 
+
+
     defer file.Close()
     
     items := model.FromCSVFile(bufio.NewReader(file))
 
-    var z_val Wrappers
-
-    // 1) z-val
-    for i, e := range items {
-      //w := I()
-      //w.Ir = items[i]
-      //w.Z =  math.Sqrt(math.Pow(e.AcX,2) + math.Pow(e.AcY,2) + math.Pow(e.AcZ,2))
-
-      z_val = append(z_val, Wrapper{
-        Ir:items[i],
-        Z: math.Sqrt(math.Pow(e.AcX,2) + math.Pow(e.AcY,2) + math.Pow(e.AcZ,2)) })
-      //fmt.Println(z_val[i])
-    }
-
-    //fmt.Println("GHFRIOGHJERWN")
-
-
-    // 2) .99 quantile
-    sort.Sort(z_val)
-
-    topI := len(z_val) * 99 / 100
-    //fmt.Println(topI)
-    lol := z_val[topI:]
-    topZSlice := lol
-
-    var diff Wrappers
-    // 3) diff
-    for i := 0; i < len(topZSlice) - 1; i++ {
-      diff = append(diff, Wrapper{
-        Ir: topZSlice[i].Ir,
-        Z: topZSlice[i + 1].Z - topZSlice[i].Z})
-
-      //diff = append(diff, topZSlice[i])
-      //diff[i].ir = topZSlice[i]
-      //diff[i].Z = topZSlice[i + 1].Z - topZSlice[i].Z
-    }
-    diff = append(diff, Wrapper{
-      Ir: topZSlice[len(topZSlice) - 1].Ir,
-      Z: topZSlice[len(topZSlice) - 1].Z})
-    // 4) pow2
-
-    //fmt.Println(diff)
-
-    for i, e := range diff {
-      diff[i].Z = math.Pow(e.Z,2)
-    }
-
-    var filtered []bool
-    // 5) filter < 40
-
-    for _, e := range(diff) {
-      filtered = append(filtered, e.Z > 40)
-    }
-
-    for i, _ := range diff {
-      if filtered[i] {
-          fmt.Println(diff[i])
-          c := utils.GetConn()
-
-        //    fmt.Println("WTF")
-        //fmt.Println("WTF1")
-          c.Write(diff[i].Ir)
-        //fmt.Println("WTF2")
-      }
-    }
+    go SaveMe(items)
 
     fmt.Fprintf(w, `
       processed %d items
