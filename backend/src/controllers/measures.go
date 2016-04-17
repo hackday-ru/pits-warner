@@ -20,18 +20,19 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
         <input type="submit" value="upload" />
       </form>
     `)
-    
-    
   }
   
   if r.Method == "POST" {
 
     r.ParseMultipartForm(32 << 20)
+    fmt.Println(r.MultipartForm.File["uploadfile"])
     file, _, err := r.FormFile("uploadfile")
     if err != nil {
       fmt.Println(err)
       return
     }
+
+
     defer file.Close()
     
     items := model.FromCSVFile(bufio.NewReader(file))
