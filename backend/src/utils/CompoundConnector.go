@@ -7,7 +7,7 @@ import (
   "log"
   "strconv"
   "github.com/satori/go.uuid"
-  "fmt"
+  //"fmt"
 )
 
 var  conn CompoundConnector;
