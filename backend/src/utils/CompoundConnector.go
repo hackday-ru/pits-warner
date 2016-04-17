@@ -8,6 +8,7 @@ import (
   "strconv"
   "github.com/satori/go.uuid"
   //"fmt"
+  //"fmt"
 )
 
 var  conn CompoundConnector;
@@ -61,6 +62,8 @@ func (writer CompoundConnector) Write(rec model.InputRecord)  {
   acc := toString(rec.AcX) + ":" + toString(rec.AcY) + ":" + toString(rec.AcZ)
 
   uid := uuid.NewV4()
+
+  //fmt.Println("LOL", acc)
 
   err := writer.RedisConnector.Set(uid.String(), acc, 0).Err()
   if err != nil {
