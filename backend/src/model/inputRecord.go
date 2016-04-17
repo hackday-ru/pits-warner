@@ -25,6 +25,7 @@ type InputRecord struct {
 }
 
 
+
 func FromCSVFile(inReader io.Reader) []InputRecord {
 
   var res []InputRecord;
