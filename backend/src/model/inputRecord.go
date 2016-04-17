@@ -24,6 +24,22 @@ type InputRecord struct {
   Altitude float64
 }
 
+func IRF() InputRecord {
+  return InputRecord{
+    Uid: uuid.NewV4(),
+    Timestamp: 0.0,
+    Longitude: 0.0,
+    Latitude: 0.0,
+    Altitude: 0.0,
+    AcX: 0.0,
+    AcY: 0.0,
+    AcZ: 0.0,
+    Accuracy: 0.0,
+    Bearing: 0.0,
+    Speed: 0.0,
+  }
+}
+
 
 
 func FromCSVFile(inReader io.Reader) []InputRecord {
