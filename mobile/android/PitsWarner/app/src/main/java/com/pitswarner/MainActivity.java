@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Connection", "Keep-Alive");
                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "plain/text" + boundary);
+                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                 conn.setRequestProperty("uploaded_file", file.getName());
 
                 dos = new DataOutputStream(conn.getOutputStream());
