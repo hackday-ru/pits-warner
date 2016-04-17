@@ -7,6 +7,9 @@ var App = {}
 //App.host = 'http://52.58.116.75:8080'
 App.host = 'http://localhost:8080'
 
+App.initPosition = [59.891132851001714, 30.316622257232662];
+App.initZoom = 15;
+
 App.updateMarkers = function(items) {
   for (var i = 0, n = App.markers.length; i < n; ++i) {
     App.map.removeLayer(markers[i]);
@@ -27,7 +30,7 @@ App.getPitsUrl = function() {
   //return 'testData/pits.json'
   
   var point = App.map.getCenter();
-  var radius = 10000;
+  var radius = 1000;
   App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
     point.lat, point.lng, radius
   );
@@ -62,7 +65,7 @@ $(function() {
     }
 
     App.map.on('moveend', moveend);
-    App.map.setView([59.89444, 30.26417], 10); //[51.505, -0.09]
+    App.map.setView(App.initPosition, App.initZoom);
 
     var mapLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
