@@ -11,18 +11,21 @@ App.updateMarkers = function(items) {
   for (var i = 0, n = App.markers.length; i < n; ++i) {
     App.map.removeLayer(markers[i]);
   }
-  $.each(item, function (key, val) {
+  $.each(items, function (key, val) {
     App.addMarker(val)
   });
 };
 
 App.addMarker = function(p) {
   App.markers.push(
-    L.marker([+p.Lat, +p.Lnt], {icon: App.markerIcon}).addTo(App.map)
+    L.marker([+p.Lat, +p.Lng], {icon: App.markerIcon}).addTo(App.map)
   );
 }
 
 App.getPitsUrl = function() {
+  
+  //return 'testData/pits.json'
+  
   var point = App.map.getCenter();
   var radius = 10000;
   App.postfix = '/pits?lng=%0.7f&lat=%0.7f&radius=%0.7f'.format(
