@@ -8,17 +8,17 @@ var App = {}
 App.host = 'http://localhost:8080'
 
 App.updateMarkers = function(data) {
-  for (var i = 0, n = markers.length; i < n; ++i) {
-    map.removeLayer(markers[i]);
+  for (var i = 0, n = App.markers.length; i < n; ++i) {
+    App.map.removeLayer(markers[i]);
   }
   $.each(data, function (key, val) {
-    addMarker(val)
-  })
+    App.addMarker(val)
+  });
 };
 
 App.addMarker = function(p) {
-  markers.push(
-    L.marker([+p.Lat, +p.Lnt], {icon: App.markerIcon}).addTo(map)
+  App.markers.push(
+    L.marker([+p.Lat, +p.Lnt], {icon: App.markerIcon}).addTo(App.map)
   );
 }
 
@@ -34,7 +34,7 @@ App.getPitsUrl = function() {
 $(function() {
 
     var map = App.map = L.map('map');
-    var markers = [];
+    App.markers = [];
 
     /*var marker_icon = L.icon({
         iconUrl: './img/marker1.png',
@@ -44,25 +44,22 @@ $(function() {
     App.markerIcon = L.divIcon({className: 'icon'});
     
     function moveend() {
-        var bounds = map.getBounds();
-        
-        markers = [];
-
-        $.ajax({
-            type: 'GET',
-            dataType: "json",
-            url: App.getPitsUrl(),
-            success: function(data){
-              App.updateMarkers(data);
-            },
-            error: function (err) {
-              console.log(err);
-            }
-        });
+      var bounds = map.getBounds();
+      $.ajax({
+          type: 'GET',
+          dataType: "json",
+          url: App.getPitsUrl(),
+          success: function(data){
+            App.updateMarkers(data);
+          },
+          error: function (err) {
+            console.log(err);
+          }
+      });
     }
-    
-    map.on('moveend', moveend);
-    map.setView([59.89444, 30.26417], 10); //[51.505, -0.09]
+
+    App.map.on('moveend', moveend);
+    App.map.setView([59.89444, 30.26417], 10); //[51.505, -0.09]
 
     var mapLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
