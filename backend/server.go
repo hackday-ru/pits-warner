@@ -112,8 +112,6 @@ func addMockHandler(w http.ResponseWriter, r *http.Request) {
     Speed: 0.0,
   }
 
-
-
   //conn.RedisConnector.Set("sample", "val", 0)
   conn.Write(rec)
 }
