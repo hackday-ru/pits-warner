@@ -19,6 +19,7 @@ import (
 	"net"
 )
 
+const YOUR_INTERFACE_NAME = "en0"
 var conn = new(utils.CompoundConnector)
 
 var name string
@@ -44,8 +45,12 @@ func setAliveField() {
 			case *net.IPAddr:
 				ip = v.IP
 			}
-			fmt.Println("%s", ip.String())
-			name = "ri4tghuwwqrgqerqwfqwrfqrefwqrgetgwrwtegtnieuoighwtuigh"
+			if i.Name == YOUR_INTERFACE_NAME && ip.To4() != nil{
+				name = ip.String()
+				fmt.Println("%s", ip.To4().String())
+
+			}
+
 			// process IP address
 		}
 	}
@@ -230,8 +235,7 @@ func becomeHandler(){
 }
 
 func updateNodeAlive(i int){
-	val, err := conn.RedisConnector.Get(name).Result()
-	fmt.Printf("%s\n", val)
+	err := conn.RedisConnector.Get(name).Err()
 	if err != nil {
 		fmt.Printf("Running in dispatcher mode\n")
 		go becomeDispatcher()
@@ -240,8 +244,8 @@ func updateNodeAlive(i int){
 	} else {
 		fmt.Printf("Waiting connections\n")
 		i += 1
-		conn.RedisConnector.LPushX("nodes", 1)
-		conn.RedisConnector.Expire("nodes", 2 * time.Second)
+		conn.RedisConnector.LPush("nodes", strconv.Itoa(i))
+		//conn.RedisConnector.Expire("nodes", 2 * time.Second)
 		fmt.Printf("updating keep alive %d \n", i)
 		time.Sleep(20 * time.Millisecond)
 		updateNodeAlive(i)
