@@ -10,9 +10,11 @@ import (
   "utils"
   "math"
   "sort"
+  "net/http/httputil"
 )
 
 type Wrapper struct {
+  ir model.InputRecord
   Ir model.InputRecord
 
   Z float64
@@ -31,13 +33,6 @@ func (ws Wrappers) Less(i, j int) bool {
   return ws[i].Z < ws[j].Z
 }
 
-//func I() Wrapper {
-//  w := new(Wrapper)
-//  w.Z = 0.0
-//  w.Ir = model.IRF()
-//  return w
-//}
-
 
 func MeasureHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "GET" {
@@ -54,10 +49,12 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "POST" {
 
     r.ParseMultipartForm(32 << 20)
-    fmt.Println(r.MultipartForm.File["uploadfile"])
+    dump, err := httputil.DumpRequest(r, true)
+    s := string(dump[:])
+    fmt.Println(s)
     file, _, err := r.FormFile("uploadfile")
     if err != nil {
-      fmt.Println("wtf", err)
+      fmt.Println(err)
       return
     }
 
@@ -118,12 +115,13 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
 
     for _, e := range(diff) {
       filtered = append(filtered, e.Z > 40)
-      //fmt.Println(filtered[i])
     }
 
 
 
     for i, _ := range diff {
+
+    for i, e := range diff {
       if filtered[i] {
           fmt.Println(diff[i])
           c := utils.GetConn()
@@ -140,5 +138,24 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
     `, len(items))
     
   }
-  
+
+}
+
+
+func MeasureHandlerText(w http.ResponseWriter, r *http.Request) {
+  if r.Method != "POST" {
+    fmt.Fprintf(w, `
+      <h1>Upload data</h1>
+      I can understand only POST
+    `)
+    return
+
+  }
+  //buf := new(bytes.Buffer)
+  //buf.ReadFrom(r.Body)
+
+  model.FromCSVFile(r.Body)
+
+  //s := buf.String()
+  //fmt.Println(s)
 }
