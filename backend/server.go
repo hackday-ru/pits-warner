@@ -156,7 +156,7 @@ func getMockHandler_public(w http.ResponseWriter, r *http.Request) {
 func updateRedisAlive() {
 	conn.RedisConnector.Set(name, "1", 0)
 	conn.RedisConnector.PExpire(name, 500 * 1000000)
-	fmt.Printf("updating keep alive\n")
+	//fmt.Printf("updating keep alive\n")
 	time.Sleep(400 * time.Millisecond)
 	updateRedisAlive()
 }
