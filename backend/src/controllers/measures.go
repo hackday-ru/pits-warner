@@ -10,6 +10,7 @@ import (
   "utils"
   "math"
   "sort"
+  "net/http/httputil"
 )
 
 type Wrapper struct {
@@ -47,7 +48,9 @@ func MeasureHandler(w http.ResponseWriter, r *http.Request) {
   if r.Method == "POST" {
 
     r.ParseMultipartForm(32 << 20)
-    fmt.Println(r.Form.Encode())
+    dump, err := httputil.DumpRequest(r, true)
+    s := string(dump[:])
+    fmt.Println(s)
     file, _, err := r.FormFile("uploadfile")
     if err != nil {
       fmt.Println(err)
