@@ -6,6 +6,7 @@ var lineReader = require('readline').createInterface({
 
 var arr = []
 
+console.log('"x"');
 lineReader.on('line', function (line) {
   var res = +line.substr(line.indexOf(':') + 1);
   if(arr.length > 0 ) {

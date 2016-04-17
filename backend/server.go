@@ -339,23 +339,24 @@ func updateNodeAlive(i int){
 
 func main() {
 	setAliveField()
+	becomeDispatcher()
 	conn.Init("52.58.116.75:6379", "52.58.116.75:9042")
 
 	//conn.RedisConnector.Set("alive", "1", 0)
 	//conn.RedisConnector.Expire("alive", 5 * 1000000000)
 	//ticker := time.NewTicker(time.Second / 2)
-	err := conn.RedisConnector.Get(name).Err()
-	if err != nil {
-		fmt.Printf("Running in dispatcher mode\n")
-		go becomeDispatcher()
-		updateRedisAlive()
-		//panic(err)
-	} else {
-		fmt.Printf("Running in handler mode")
-		go becomeHandler()
-		updateNodeAlive(0)
-
-	}
+	//err := conn.RedisConnector.Get(name).Err()
+	//if err != nil {
+	//	fmt.Printf("Running in dispatcher mode\n")
+	//	go becomeDispatcher()
+	//	updateRedisAlive()
+	//	//panic(err)
+	//} else {
+	//	fmt.Printf("Running in handler mode")
+	//	go becomeHandler()
+	//	updateNodeAlive(0)
+	//
+	//}
 }
 //quit := make(chan struct{})
 //go func() {
